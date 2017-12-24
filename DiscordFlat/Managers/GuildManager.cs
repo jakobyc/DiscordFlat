@@ -27,14 +27,8 @@ namespace DiscordFlat.Managers
                 client.Headers.Add(HttpRequestHeader.Authorization, tokenResponse.Type + " " + tokenResponse.AccessToken);
                 try
                 {
-                    // TODO: May want a more elogant solution for building paths (no IRetrievable to get path from)
                     IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
-                    string uri = uriBuilder.AddPath("guilds/")
-                                           .AddPath(guildId + "/")
-                                           .AddPath("members/")
-                                           .AddPath(userId + "/")
-                                           .AddPath("roles/")
-                                           .AddPath(roleId)
+                    string uri = uriBuilder.AddPath(string.Format("guilds/{0}/members/{1}/roles/{2}", guildId, userId, roleId))
                                            .Build();
 
                     string response = client.UploadString(uri, "PUT", "");

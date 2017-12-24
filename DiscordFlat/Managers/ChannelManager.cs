@@ -61,5 +61,29 @@ namespace DiscordFlat.Managers
             }
             return message;
         }
+
+        /// <summary>
+        /// Post a message through a Webhook.
+        /// </summary>
+        public bool CreateMessage(string webhookId, string webhookToken, string message)
+        {
+            using (WebClient client = new WebClient())
+            {
+                client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                try
+                {
+                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
+                    string uri = uriBuilder.AddPath(string.Format("webhooks/{0}/{1}", webhookId, webhookToken))
+                                           .Build();
+
+                    string json = string.Format("{{ \"content\":\"{0}\" }}", message);
+                    string response = client.UploadString(uri, "POST", json);
+
+                    return true;
+                }
+                catch (Exception e) { }
+            }
+            return false;
+        }
     }
 }
