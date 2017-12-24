@@ -40,5 +40,26 @@ namespace DiscordFlat.Managers
             }
             return messages;
         }
+
+        public Message GetMessage(TokenResponse tokenResponse, string channelId, string messageId)
+        {
+            Message message = new Message();
+
+            using (WebClient client = new WebClient())
+            {
+                client.Headers.Add(HttpRequestHeader.Authorization, tokenResponse.Type + " " + tokenResponse.AccessToken);
+                try
+                {
+                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
+                    string uri = uriBuilder.AddPath(message.PathUrl.Replace("{channel}", channelId).Replace("{message}", messageId))
+                                           .Build();
+                    string response = client.DownloadString(uri);
+
+                    message = deserializer.Deserialize<Message>(response);
+                }
+                catch (Exception) { }
+            }
+            return message;
+        }
     }
 }

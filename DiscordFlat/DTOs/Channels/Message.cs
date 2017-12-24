@@ -9,7 +9,7 @@ using DiscordFlat.DTOs.Users;
 namespace DiscordFlat.DTOs.Channels
 {
     [DataContract]
-    public class Message
+    public class Message : IRetrievable
     {
         [DataMember(Name="id")]
         public string Id { get; set; }
@@ -40,5 +40,7 @@ namespace DiscordFlat.DTOs.Channels
 
         [DataMember(Name = "attachments")]
         public Attachments Attachments { get; set; }
+
+        public string PathUrl { get => "channels/{channel}/messages/{message}"; }
     }
 }

@@ -47,12 +47,16 @@
     <Compile Include="DTOs\Channels\Attachments.cs" />
     <Compile Include="DTOs\Channels\Message.cs" />
     <Compile Include="DTOs\Channels\Messages.cs" />
+    <Compile Include="DTOs\Guilds\GuildRole.cs" />
+    <Compile Include="DTOs\Guilds\GuildRoles.cs" />
     <Compile Include="DTOs\IRetrievable.cs" />
     <Compile Include="DTOs\Users\DiscordUser.cs" />
     <Compile Include="DTOs\Authorization\TokenRequest.cs" />
     <Compile Include="DTOs\Authorization\TokenResponse.cs" />
     <Compile Include="Managers\ChannelManager.cs" />
+    <Compile Include="Managers\GuildManager.cs" />
     <Compile Include="Managers\IDiscordChannelManager.cs" />
+    <Compile Include="Managers\IDiscordGuildManager.cs" />
     <Compile Include="Managers\IDiscordUserManager.cs" />
     <Compile Include="Managers\UserManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
