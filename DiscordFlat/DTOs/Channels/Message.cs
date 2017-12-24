@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using DiscordFlat.DTOs.Users;
 
 namespace DiscordFlat.DTOs.Channels
 {
@@ -14,8 +15,8 @@ namespace DiscordFlat.DTOs.Channels
         public string Id { get; set; }
         [DataMember(Name = "channel_id")]
         public string ChannelId { get; set; }
-        // TODO: Create Author object
-        public string Author { get; set; }
+        [DataMember(Name = "author")]
+        public DiscordUser Author { get; set; }
         [DataMember(Name = "content")]
         public string Content { get; set; }
         [DataMember(Name = "timestamp")]
@@ -36,5 +37,8 @@ namespace DiscordFlat.DTOs.Channels
 
         [DataMember(Name = "type")]
         public int Type { get; set; }
+
+        [DataMember(Name = "attachments")]
+        public Attachments Attachments { get; set; }
     }
 }

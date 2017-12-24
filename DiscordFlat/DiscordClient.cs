@@ -30,8 +30,6 @@ namespace DiscordFlat
         {
             TokenResponse tokenResponse = new TokenResponse();
 
-            //const string tokenUrl = "https://discordapp.com/api/oauth2/token";
-
             using (WebClient client = new WebClient())
             {
                 client.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
@@ -46,11 +44,7 @@ namespace DiscordFlat
                                            .AddParameter("code", code, true)
                                            .AddParameter("redirect_uri", redirectUri, false)
                                            .Build();
-                    /*string uri = string.Format("{0}?client_id={1}&client_secret={2}&grant_type=authorization_code&code={3}&redirect_uri={4}", tokenUrl,
-                                                                                                                                              clientId,
-                                                                                                                                              clientSecret,
-                                                                                                                                              code,
-                                                                                                                                              redirectUri);*/
+
                     string response = client.UploadString(uri, "POST", "");
 
                     tokenResponse = deserializer.Deserialize<TokenResponse>(response);
@@ -58,50 +52,6 @@ namespace DiscordFlat
                 catch (Exception) { }
             }
             return tokenResponse;
-        }
-
-        public DiscordUser GetUser(TokenResponse tokenResponse)
-        {
-            DiscordUser user = new DiscordUser();
-            using (WebClient client = new WebClient())
-            {
-                client.Headers.Add(HttpRequestHeader.Authorization, tokenResponse.Type + " " + tokenResponse.AccessToken);
-                try
-                {
-                    //https://discordapp.com/api/users/@me
-                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
-                    string uri = uriBuilder.AddPath(user)
-                                           .Build();
-                    string response = client.DownloadString(uri);
-
-                    user = deserializer.Deserialize<DiscordUser>(response);
-                }
-                catch (Exception) { }
-            }
-            return user;
-        }
-
-        public Messages GetMessages(TokenResponse tokenResponse, string channelId)
-        {
-            Messages messages = new Messages();
-
-            using (WebClient client = new WebClient())
-            {
-                //https://discordapp.com/api/channels/393599551728123906/messages
-                client.Headers.Add(HttpRequestHeader.Authorization, tokenResponse.Type + " " + tokenResponse.AccessToken);
-                try
-                {
-                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
-                    string uri = uriBuilder.AddPath(messages.PathUrl.Replace("{channel}", channelId))
-                                           .Build();
-                    string response = client.DownloadString(uri);
-
-                    messages = deserializer.Deserialize<Messages>(response);
-                }
-                catch (Exception) { }
-            }
-            return messages;
-            //return user;
         }
     }
 }

@@ -11,6 +11,16 @@ namespace DiscordFlat.DTOs.Authorization
     [DataContract]
     public class TokenResponse : IRetrievable
     {
+        public TokenResponse() { }
+        public TokenResponse(bool bot)
+        {
+            if (bot)
+            {
+                // TODO: Make global constant for this:
+                this.Type = "Bot";
+            }
+        }
+
         [DataMember(Name = "access_token")]
         public string AccessToken { get; set; }
         [DataMember(Name = "token_type")]
