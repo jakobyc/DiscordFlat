@@ -47,6 +47,9 @@
     <Compile Include="DTOs\Channels\Attachments.cs" />
     <Compile Include="DTOs\Channels\Message.cs" />
     <Compile Include="DTOs\Channels\Messages.cs" />
+    <Compile Include="DTOs\Guilds\Guild.cs" />
+    <Compile Include="DTOs\Guilds\GuildMember.cs" />
+    <Compile Include="DTOs\Guilds\GuildMembers.cs" />
     <Compile Include="DTOs\Guilds\GuildRole.cs" />
     <Compile Include="DTOs\Guilds\GuildRoles.cs" />
     <Compile Include="DTOs\IRetrievable.cs" />

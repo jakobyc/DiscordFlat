@@ -45,6 +45,27 @@ namespace DiscordFlat.Managers
             }
         }
 
+        public GuildMembers GetMembers(TokenResponse tokenResponse, string guildId)
+        {
+            GuildMembers members = new GuildMembers();
+
+            using (WebClient client = new WebClient())
+            {
+                client.Headers.Add(HttpRequestHeader.Authorization, tokenResponse.Type + " " + tokenResponse.AccessToken);
+                try
+                {
+                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
+                    string uri = uriBuilder.AddPath(members.PathUrl.Replace("{guild}", guildId))
+                                           .Build();
+                    string response = client.DownloadString(uri);
+
+                    members = deserializer.Deserialize<GuildMembers>(response);
+                }
+                catch (Exception) { }
+            }
+            return members;
+        }
+
         public GuildRoles GetRoles(TokenResponse tokenResponse, string guildId)
         {
             GuildRoles roles = new GuildRoles();
@@ -61,7 +82,7 @@ namespace DiscordFlat.Managers
 
                     roles = deserializer.Deserialize<GuildRoles>(response);
                 }
-                catch(Exception e) { }
+                catch(Exception) { }
             }
             return roles;
         }
