@@ -24,5 +24,8 @@ namespace DiscordFlat.DTOs.WebSockets
 
         [DataMember(Name = "shard")]
         public int[] Shards { get; set; }
+
+        /*[DataMember(Name = "presence")]
+        public UpdateStatus Presence { get; set; }*/
     }
 }

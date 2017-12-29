@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordFlat.DTOs.WebSockets;
 
 namespace DiscordFlat
 {
@@ -52,6 +53,29 @@ namespace DiscordFlat
                 catch (Exception) { }
             }
             return tokenResponse;
+        }
+
+        public GatewayBot GetGatewayBot(TokenResponse tokenResponse)
+        {
+            GatewayBot bot = new GatewayBot();
+
+            using (WebClient client = new WebClient())
+            {
+                client.Headers.Add(HttpRequestHeader.Authorization, tokenResponse.Type + " " + tokenResponse.AccessToken);
+                try
+                {
+                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
+                    string uri = uriBuilder.AddPath(bot)
+                                           .Build();
+
+                    string response = client.DownloadString(uri);
+
+                    bot = deserializer.Deserialize<GatewayBot>(response);
+                }
+                catch (Exception) { }
+            }
+
+            return bot;
         }
     }
 }

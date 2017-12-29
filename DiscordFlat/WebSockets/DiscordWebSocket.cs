@@ -1,5 +1,6 @@
 ﻿using DiscordFlat.DTOs.WebSockets;
 using DiscordFlat.Serialization;
+using DiscordFlat.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,7 +22,7 @@ namespace DiscordFlat.WebSockets
         public DiscordWebSocket()
         {
             client = new ClientWebSocket();
-            uri = new Uri("wss://gateway.discord.gg");
+            uri = new Uri("wss://gateway.discord.gg?v=6&encoding=json");
             cancelToken = new CancellationToken();
             serializer = new JsonSerializer();
         }
@@ -34,7 +35,7 @@ namespace DiscordFlat.WebSockets
 
             // Receive the "Hello" payload:
             HelloObject response = await ReceiveAsync<HelloObject>();
-            string json = serializer.Serialize(response);
+            
             // Spin up thread for heartbeat:
             Task t = new Task(() => Heartbeat(response));
             t.Start();
@@ -72,12 +73,26 @@ namespace DiscordFlat.WebSockets
             }
         }
 
-        public async Task Identify()
+        public async Task Identify(string token, int shardId)
         {
-            string payloadData = "{\"op\": 2,\"d\": null}";
-            await SendAsync(payloadData);
+            IdentifyObject identify = new IdentifyObject();
+            identify.OpCode = 2;
 
-            GatewayObject heartbeatResponse = await ReceiveAsync<GatewayObject>();
+            identify.EventData = new Identify();
+            identify.EventData.Compress = false;
+            identify.EventData.LargeThreshold = 50;
+            identify.EventData.Token = token;
+            identify.EventData.Shards = new int[] { shardId, 10 };
+
+            identify.EventData.Properties = new IdentifyConnection();
+            identify.EventData.Properties.OperatingSystem = "Windows";
+            identify.EventData.Properties.Browser = "Google";
+            identify.EventData.Properties.Device = "Google";
+
+            string payload = serializer.Serialize(identify);
+            await SendAsync(payload);
+
+            IdentifyObject heartbeatResponse = await ReceiveAsync<IdentifyObject>();
         }
 
         /// <summary>
