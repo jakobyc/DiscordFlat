@@ -1,6 +1,7 @@
 ﻿using DiscordFlat.DTOs.WebSockets;
+using DiscordFlat.DTOs.WebSockets.Events;
+using DiscordFlat.DTOs.WebSockets.Heartbeats;
 using DiscordFlat.Serialization;
-using DiscordFlat.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -64,10 +65,13 @@ namespace DiscordFlat.WebSockets
                 }
 
                 // Send heartbeat:
-                string heartbeat = string.Format("{{\"op\": 1,\"d\": {0}}}", sequenceNumber);
-                await SendAsync(heartbeat);
+                Heartbeat heartbeat = new Heartbeat();
+                heartbeat.EventData = sequenceNumber;
 
-                HelloObject heartbeatResponse = await ReceiveAsync<HelloObject>();
+                string message = serializer.Serialize(heartbeat);
+                await SendAsync(message);
+
+                HeartbeatResponse heartbeatResponse = await ReceiveAsync<HeartbeatResponse>();
 
                 timer.Reset();
             }
@@ -91,8 +95,8 @@ namespace DiscordFlat.WebSockets
 
             string payload = serializer.Serialize(identify);
             await SendAsync(payload);
-
-            IdentifyObject heartbeatResponse = await ReceiveAsync<IdentifyObject>();
+            
+            ReadyResponse heartbeatResponse = await ReceiveAsync<ReadyResponse>();
         }
 
         /// <summary>
