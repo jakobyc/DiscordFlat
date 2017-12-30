@@ -33,6 +33,8 @@ namespace DiscordFlat.DTOs.Guilds
         public string WidgetChannelId { get; set; }
         [DataMember(Name = "system_channel_id")]
         public string SystemChannelId { get; set; }
+        [DataMember(Name = "joined_at")]
+        public string JoinedAt { get; set; }
 
         [DataMember(Name = "owmer")]
         public bool Owner { get; set; }
@@ -65,8 +67,5 @@ namespace DiscordFlat.DTOs.Guilds
 
         [DataMember(Name = "features")]
         public List<string> Features { get; set; }
-
-        [DataMember(Name = "joined_at")]
-        public DateTime JoinedAt { get; set; }
     }
 }

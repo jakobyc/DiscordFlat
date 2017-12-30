@@ -8,10 +8,14 @@ using System.Threading.Tasks;
 namespace DiscordFlat.DTOs.WebSockets
 {
     [DataContract]
-    public class RequestGuildMembers
+    public class RequestGuildMembers : GatewayObject
     {
-        [DataMember(Name = "op")]
-        public int OpCode { get => (int)OpCodes.RequestGuildMembers; set { } }
+        public RequestGuildMembers()
+        {
+            OpCode = (int)OpCodes.RequestGuildMembers;
+        }
+        /*[DataMember(Name = "op")]
+        public int? OpCode { get => (int)OpCodes.RequestGuildMembers; set { } }*/
 
         [DataMember(Name = "d")]
         public GuildMembersRequest EventData { get; set; }

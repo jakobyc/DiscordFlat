@@ -85,5 +85,48 @@ namespace DiscordFlat.Managers
             }
             return false;
         }
+
+        public bool CreateMessage(TokenResponse tokenResponse, string channelId, string message)
+        {
+            using (WebClient client = new WebClient())
+            {
+                client.Headers.Add(HttpRequestHeader.Authorization, tokenResponse.Type + " " + tokenResponse.AccessToken);
+                client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                try
+                {
+                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
+                    string uri = uriBuilder.AddPath(string.Format("channels/{0}/messages", channelId))
+                                           .Build();
+
+                    string json = string.Format("{{ \"content\":\"{0}\" }}", message);
+                    string response = client.UploadString(uri, "POST", json);
+
+                    return true;
+                }
+                catch (Exception) { }
+            }
+            return false;
+        }
+
+        public bool DeleteMessage(TokenResponse tokenResponse, string channelId, string messageId)
+        {
+            using (WebClient client = new WebClient())
+            {
+                client.Headers.Add(HttpRequestHeader.Authorization, tokenResponse.Type + " " + tokenResponse.AccessToken);
+                try
+                {
+                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
+                    string uri = uriBuilder.AddPath(string.Format("channels/{0}/messages/{1}", channelId, messageId))
+                                           .Build();
+
+                    //string json = string.Format("{{ \"content\":\"{0}\" }}", message);
+                    string response = client.UploadString(uri, "DELETE", "");
+
+                    return true;
+                }
+                catch (Exception) { }
+            }
+            return false;
+        }
     }
 }

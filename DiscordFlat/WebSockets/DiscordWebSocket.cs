@@ -1,7 +1,9 @@
 ﻿using DiscordFlat.DTOs.WebSockets;
 using DiscordFlat.DTOs.WebSockets.Events;
+using DiscordFlat.DTOs.WebSockets.Events.Guilds;
 using DiscordFlat.DTOs.WebSockets.Heartbeats;
 using DiscordFlat.Serialization;
+using DiscordFlat.WebSockets.Listeners;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,40 +17,61 @@ namespace DiscordFlat.WebSockets
 {
     public class DiscordWebSocket
     {
-        private ClientWebSocket client;
+        public ClientWebSocket Client;
+
+        private DiscordEventListener listener;
         private Uri uri;
         private CancellationToken cancelToken;
         private JsonSerializer serializer;
 
         public DiscordWebSocket()
         {
-            client = new ClientWebSocket();
+            Client = new ClientWebSocket();
+            listener = new DiscordEventListener(this);
             uri = new Uri("wss://gateway.discord.gg?v=6&encoding=json");
             cancelToken = new CancellationToken();
             serializer = new JsonSerializer();
         }
 
-        public async Task<HelloObject> Connect()
+        /// <summary>
+        /// Attempt to connect to a WebSocket server and identify your bot user.
+        /// </summary>
+        /// <param name="token">Bot access token.</param>
+        /// <param name="shardId">Bot shard id.</param>
+        /// <returns>Connection status.</returns>
+        public async Task<bool> Connect(string token, int shardId)
         {
-            ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[1000]);
+            await Client.ConnectAsync(uri, cancelToken);
 
-            await client.ConnectAsync(uri, cancelToken);
+            bool receivedHello = await Hello();
+            if (receivedHello)
+            {
+                ReadyResponse response = await Identify(token, shardId);
+                if (response != null)
+                {
+                    return true;
+                }
+            }
 
-            // Receive the "Hello" payload:
-            HelloObject response = await ReceiveAsync<HelloObject>();
-            
-            // Spin up thread for heartbeat:
-            Task t = new Task(() => Heartbeat(response));
-            t.Start();
-
-            return response;
+            return false;
         }
 
-        public async void Heartbeat(HelloObject gatewayObject)
+        /// <summary>
+        /// Attempt to connect to a WebSocket.
+        /// </summary>
+        /// <returns>Connection and hello payload status.</returns>
+        public async Task<bool> Connect()
+        {
+            await Client.ConnectAsync(uri, cancelToken);
+
+            return await Hello();
+        }
+
+        protected async void Heartbeat(HelloObject gatewayObject)
         {
             Stopwatch timer = new Stopwatch();
 
-            while (client.State == WebSocketState.Open)
+            while (Client.State == WebSocketState.Open)
             {
                 timer.Start();
 
@@ -69,56 +92,112 @@ namespace DiscordFlat.WebSockets
                 heartbeat.EventData = sequenceNumber;
 
                 string message = serializer.Serialize(heartbeat);
-                await SendAsync(message);
 
-                HeartbeatResponse heartbeatResponse = await ReceiveAsync<HeartbeatResponse>();
+                await SendAsync(message);
 
                 timer.Reset();
             }
         }
 
-        public async Task Identify(string token, int shardId)
+        public async Task<ReadyResponse> Identify(string token, int shardId)
         {
-            IdentifyObject identify = new IdentifyObject();
-            identify.OpCode = 2;
+            ReadyResponse ready = new ReadyResponse();
 
-            identify.EventData = new Identify();
-            identify.EventData.Compress = false;
-            identify.EventData.LargeThreshold = 50;
-            identify.EventData.Token = token;
-            identify.EventData.Shards = new int[] { shardId, 10 };
+            if (Client.State == WebSocketState.Open)
+            {
+                IdentifyObject identify = new IdentifyObject();
+                identify.OpCode = 2;
 
-            identify.EventData.Properties = new IdentifyConnection();
-            identify.EventData.Properties.OperatingSystem = "Windows";
-            identify.EventData.Properties.Browser = "Google";
-            identify.EventData.Properties.Device = "Google";
+                identify.EventData = new Identify();
+                identify.EventData.Compress = false;
+                identify.EventData.LargeThreshold = 50;
+                identify.EventData.Token = token;
+                identify.EventData.Shards = new int[] { shardId, 1 };
 
-            string payload = serializer.Serialize(identify);
-            await SendAsync(payload);
-            
-            ReadyResponse heartbeatResponse = await ReceiveAsync<ReadyResponse>();
+                identify.EventData.Properties = new IdentifyConnection();
+                identify.EventData.Properties.OperatingSystem = "Windows";
+                identify.EventData.Properties.Browser = "Library";
+                identify.EventData.Properties.Device = "Library";
+
+                string payload = serializer.Serialize(identify);
+                await SendAsync(payload);
+
+                ready = await listener.ReceiveAsync<ReadyResponse>();
+                return ready;
+            }
+
+            // Identification failed, return null.
+            return null;
         }
 
         /// <summary>
-        /// Retrieve results from the WebSocket server.
+        /// Asynchronously list for events.
         /// </summary>
-        /// <returns></returns>
-        private async Task<T> ReceiveAsync<T>()
+        public void ListenForEvents()
         {
-            ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[1000]);
+            Task t = new Task(() => listener.Listen());
+            t.Start();
+        }
 
-            WebSocketReceiveResult results = await client.ReceiveAsync(buffer, cancelToken);
+        /// <summary>
+        /// Called when event GUILD_CREATE is fired.
+        /// </summary>
+        /// <param name="response"></param>
+        public void OnGuildCreate(string response)
+        {
+            GuildCreate guild = serializer.Deserialize<GuildCreate>(response);
+        }
 
-            string result = Encoding.ASCII.GetString(buffer.Array).Replace("\0", "");
-            T heartbeatResponse = serializer.Deserialize<T>(result);
+        public async Task RequestGuildMembers()
+        {
+            RequestGuildMembers request = new RequestGuildMembers();
+            request.EventData = new GuildMembersRequest();
+            request.OpCode = (int)OpCodes.RequestGuildMembers;
+            request.SequenceNumber = 1;
+            request.EventName = "REQUEST_GUILD_MEMBERS";
+            request.EventData.GuildId = "393599551728123904";
+            request.EventData.Limit = 0;
+            request.EventData.Query = "";
 
-            return heartbeatResponse;
+            string payload = serializer.Serialize(request);
+
+            await SendAsync(payload);
+            //await ReceiveAsync<object>();
+        }
+
+        public async Task<GuildCreate> GuildCreate()
+        {
+            ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[3000]);
+
+            GuildCreate dispatch = await listener.ReceiveAsync<GuildCreate>(buffer);
+            return dispatch;
         }
 
         private async Task SendAsync(string payloadData)
         {
             ArraySegment<byte> message = new ArraySegment<byte>(Encoding.ASCII.GetBytes(payloadData));
-            await client.SendAsync(message, WebSocketMessageType.Text, true, cancelToken);
+            await Client.SendAsync(message, WebSocketMessageType.Binary, true, CancellationToken.None);
+        }
+
+        private async Task<bool> Hello()
+        {
+            // Receive the "Hello" payload:
+            HelloObject response = await listener.ReceiveAsync<HelloObject>();
+
+            // Spin up thread for heartbeat:
+            if (response.OpCode == (int)OpCodes.Hello)
+            {
+                Task t = new Task(() => Heartbeat(response));
+                t.Start();
+
+                return true;
+            }
+            else
+            {
+                await Client.CloseAsync(WebSocketCloseStatus.Empty, "Did not receive a proper 'Hello' response from Discord's server.", CancellationToken.None);
+            }
+
+            return false;
         }
     }
 }

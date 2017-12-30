@@ -24,7 +24,7 @@ namespace DiscordFlat.DTOs.WebSockets
     };
 
     [DataContract]
-    public abstract class GatewayObject
+    public class GatewayObject
     {
         /// <summary>
         /// Opcode for the payload.

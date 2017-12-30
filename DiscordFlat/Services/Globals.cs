@@ -12,5 +12,12 @@ namespace DiscordFlat.Services
         {
             public const string Base = "https://discordapp.com/api/";
         }
+
+        public static class Events
+        {
+            public const string GuildCreate = "GUILD_CREATE",
+                                MessageCreate = "MESSAGE_CREATE",
+                                Ready = "READY";
+        }
     }
 }

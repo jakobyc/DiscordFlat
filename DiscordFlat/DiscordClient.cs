@@ -55,6 +55,23 @@ namespace DiscordFlat
             return tokenResponse;
         }
 
+        /*public void ExecuteWebhook(string webhookId, string webhookToken)
+        {
+            using (WebClient client = new WebClient())
+            {
+                client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                try
+                {
+                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
+                    string uri = uriBuilder.AddPath(string.Format("webhooks/{0}/{1}", webhookId, webhookToken))
+                                           .Build();
+
+                    byte[] response = client.UploadData(uri, "POST", new byte[10]);
+                }
+                catch (Exception) { }
+            }
+        }*/
+
         public GatewayBot GetGatewayBot(TokenResponse tokenResponse)
         {
             GatewayBot bot = new GatewayBot();
