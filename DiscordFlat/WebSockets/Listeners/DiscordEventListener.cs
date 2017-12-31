@@ -69,7 +69,6 @@ namespace DiscordFlat.WebSockets.Listeners
             return await ReceiveAsync<T>(buffer);
         }
 
-        // TODO: Abstract this to a DiscordEventListener class:
         public async Task<T> ReceiveAsync<T>(ArraySegment<byte> buffer)
         {
             WebSocketReceiveResult results = await socket.Client.ReceiveAsync(buffer, CancellationToken.None);
@@ -106,7 +105,7 @@ namespace DiscordFlat.WebSockets.Listeners
                     switch (op)
                     {
                         case ((int)OpCodes.HeartbeatAcknowledged):
-                            socket.OnHeartbeat(response);
+                            socket.Handler.HeartbeatAcknowledged(response);
                             break;
                     }
                 }

@@ -104,6 +104,7 @@
     <Compile Include="WebSockets\Caches\DiscordWebSocketCache.cs" />
     <Compile Include="WebSockets\DiscordWebSocket.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnGuildCreateEventArgs.cs" />
+    <Compile Include="WebSockets\EventHandlers\Args\DiscordOnHeartbeatEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnReadyEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnResumeEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\DiscordEventHandler.cs" />
