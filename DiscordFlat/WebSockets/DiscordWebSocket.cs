@@ -1,10 +1,12 @@
-﻿using DiscordFlat.DTOs.WebSockets;
+﻿using DiscordFlat.DTOs.Authorization;
+using DiscordFlat.DTOs.WebSockets;
 using DiscordFlat.DTOs.WebSockets.Events.Connections;
 using DiscordFlat.DTOs.WebSockets.Events.Guilds;
 using DiscordFlat.DTOs.WebSockets.Events.Messages;
 using DiscordFlat.DTOs.WebSockets.Heartbeats;
 using DiscordFlat.Managers;
 using DiscordFlat.Serialization;
+using DiscordFlat.WebSockets.Caches;
 using DiscordFlat.WebSockets.Listeners;
 using System;
 using System.Collections.Generic;
@@ -20,6 +22,7 @@ namespace DiscordFlat.WebSockets
     public class DiscordWebSocket
     {
         public ClientWebSocket Client;
+        public DiscordWebSocketCache Cache;
 
         private DiscordEventListener listener;
         private Uri uri;
@@ -29,6 +32,7 @@ namespace DiscordFlat.WebSockets
         public DiscordWebSocket()
         {
             listener = new DiscordEventListener(this);
+            Cache = new DiscordWebSocketCache();
             uri = new Uri("wss://gateway.discord.gg?v=6&encoding=json");
             cancelToken = new CancellationToken();
             serializer = new JsonSerializer();
@@ -42,9 +46,7 @@ namespace DiscordFlat.WebSockets
         /// <returns>Connection status.</returns>
         public async Task<bool> ConnectAndIdentify(string token, int shardId, int shardCount)
         {
-            await Client.ConnectAsync(uri, cancelToken);
-
-            bool receivedHello = await Hello();
+            bool receivedHello = await Connect();
             if (receivedHello)
             {
                 ReadyResponse response = await Identify(token, shardId, shardCount);
@@ -69,6 +71,9 @@ namespace DiscordFlat.WebSockets
             return await Hello();
         }
 
+        /// <summary>
+        /// Heartbeat loop for the WebSocket connection.
+        /// </summary>
         protected async void Heartbeat(HelloObject gatewayObject)
         {
             Stopwatch timer = new Stopwatch();
@@ -105,13 +110,17 @@ namespace DiscordFlat.WebSockets
             }
         }
 
-        public async Task Resume(string token, string sessionId, int? sequenceNumber)
+        /// <summary>
+        /// If an Identify request has previously been sent successfully, use this to resume off a cached session Id.
+        /// </summary>
+        /// <returns></returns>
+        public async Task Resume()
         {
             GatewayResumeObject resumeObj = new GatewayResumeObject();
             resumeObj.Resume = new GatewayResume();
-            resumeObj.Resume.Token = token;
-            resumeObj.Resume.SessionId = sessionId;
-            resumeObj.Resume.SequenceNumber = sequenceNumber;
+            resumeObj.Resume.Token = Cache.Token.AccessToken;
+            resumeObj.Resume.SessionId = Cache.ReadyResponse.EventData.SessionId;
+            resumeObj.Resume.SequenceNumber = Cache.ReadyResponse.SequenceNumber;
 
             string message = serializer.Serialize(resumeObj);
 
@@ -121,32 +130,61 @@ namespace DiscordFlat.WebSockets
             listener.Listen();
         }
 
+        /// <summary>
+        /// Attempt to send an Identify request to the server WebSocket. If previously identified, a Resume request will be sent instead.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="shardId"></param>
+        /// <param name="shardCount"></param>
+        /// <returns></returns>
         public async Task<ReadyResponse> Identify(string token, int shardId, int shardCount)
         {
             ReadyResponse ready = new ReadyResponse();
 
+            // Cache the token:
+            if (!string.IsNullOrEmpty(token))
+            {
+                Cache.Token = new TokenResponse();
+                Cache.Token.AccessToken = token; 
+            }
+
             if (Client.State == WebSocketState.Open)
             {
-                IdentifyObject identify = new IdentifyObject();
-                identify.OpCode = 2;
+                // If we haven't sent an Identify request previously, start one.
+                if (Cache.ReadyResponse == null)
+                {
+                    IdentifyObject identify = new IdentifyObject();
+                    identify.OpCode = 2;
 
-                identify.EventData = new Identify();
-                identify.EventData.Compress = false;
-                identify.EventData.LargeThreshold = 50;
-                identify.EventData.Token = token;
-                identify.EventData.Shards = new int[] { shardId, shardCount };
+                    identify.EventData = new Identify();
+                    identify.EventData.Compress = false;
+                    identify.EventData.LargeThreshold = 50;
+                    identify.EventData.Token = Cache.Token.AccessToken;
+                    identify.EventData.Shards = new int[] { shardId, shardCount };
 
-                identify.EventData.Properties = new IdentifyConnection();
-                identify.EventData.Properties.OperatingSystem = "Windows";
-                identify.EventData.Properties.Browser = "Library";
-                identify.EventData.Properties.Device = "Library";
+                    identify.EventData.Properties = new IdentifyConnection();
+                    identify.EventData.Properties.OperatingSystem = "Windows";
+                    identify.EventData.Properties.Browser = "Library";
+                    identify.EventData.Properties.Device = "Library";
 
-                string payload = serializer.Serialize(identify);
-                await SendAsync(payload);
+                    string payload = serializer.Serialize(identify);
+                    await SendAsync(payload);
 
-                ready = await listener.ReceiveAsync<ReadyResponse>();
-                listener.Listen();
-                return ready;
+                    ready = await listener.ReceiveAsync<ReadyResponse>();
+
+                    if (ready != null)
+                    {
+                        Cache.ReadyResponse = ready;
+                    }
+
+                    listener.Listen();
+                    return ready;
+                }
+                // Else resume using a session Id.
+                else
+                {
+                    await Resume();
+                }
             }
 
             // Identification failed, return null.

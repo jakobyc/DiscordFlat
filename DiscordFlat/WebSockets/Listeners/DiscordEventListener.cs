@@ -52,6 +52,10 @@ namespace DiscordFlat.WebSockets.Listeners
                 buffer = new ArraySegment<byte>(new byte[10000]);
                 Listen();
             }
+            else
+            {
+                await socket.Resume();
+            }
         }
 
         /// <summary>

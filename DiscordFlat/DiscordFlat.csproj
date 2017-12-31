@@ -101,6 +101,7 @@
     <Compile Include="Services\Globals.cs" />
     <Compile Include="Services\Uri\DiscordUriBuilder.cs" />
     <Compile Include="Services\Uri\IDiscordUriBuilder.cs" />
+    <Compile Include="WebSockets\Caches\DiscordWebSocketCache.cs" />
     <Compile Include="WebSockets\DiscordWebSocket.cs" />
     <Compile Include="WebSockets\Listeners\DiscordEventListener.cs" />
   </ItemGroup>
