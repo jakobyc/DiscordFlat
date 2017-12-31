@@ -33,33 +33,42 @@ namespace DiscordFlat.WebSockets.Listeners
         /// <summary>
         /// Listen for an event and then pass the response to the client.
         /// </summary>
-        public async void Listen()
+        public async Task Listen()
         {
             if (socket.Client.State == WebSocketState.Open)
             {
                 Listening = true;
-                WebSocketReceiveResult result = await socket.Client.ReceiveAsync(buffer, CancellationToken.None);
-                Listening = false;
-                string response = Encoding.ASCII.GetString(buffer.Array).Replace("\0", "");
-
-                if (!string.IsNullOrEmpty(response))
+                WebSocketReceiveResult result = null;
+                do
                 {
-                    string eventName = GetEventName(response);
-                    string opCode = GetOpCode(response);
+                    result = await socket.Client.ReceiveAsync(buffer, CancellationToken.None);
+                }
+                while (!result.EndOfMessage);
+                Listening = false;
+                
+                if (result.Count > 0)
+                {
+                    string response = Encoding.ASCII.GetString(buffer.Array).Replace("\0", "");
 
-                    // Asynchronous callback:
-                    Task t = new Task(() => Callback(response, eventName, opCode));
-                    t.Start();
+                    if (!string.IsNullOrEmpty(response))
+                    {
+                        string eventName = GetEventName(response);
+                        string opCode = GetOpCode(response);
+
+                        // Asynchronous callback:
+                        Task t = new Task(() => Callback(response, eventName, opCode));
+                        t.Start();
+                    }
                 }
 
                 // Recursively listen for events while the socket state is open:
                 buffer = new ArraySegment<byte>(new byte[10000]);
-                Listen();
+                await Listen();
             }
             else
             {
                 await socket.Resume();
-                Listen();
+                await Listen();
             }
         }
 
