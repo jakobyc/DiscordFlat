@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bots\Commands\BotCommands.cs" />
+    <Compile Include="Bots\DiscordGatewayBot.cs" />
     <Compile Include="DiscordClient.cs" />
     <Compile Include="DTOs\Authorization\GrantType.cs" />
     <Compile Include="DTOs\Channels\Attachment.cs" />

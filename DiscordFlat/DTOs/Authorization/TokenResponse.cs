@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace DiscordFlat.DTOs.Authorization
 {
+    public static class TokenType
+    {
+        public const string Bearer = "Bearer",
+                            Bot = "Bot";
+    }
+
     [DataContract]
     public class TokenResponse : IRetrievable
     {
@@ -16,8 +22,11 @@ namespace DiscordFlat.DTOs.Authorization
         {
             if (bot)
             {
-                // TODO: Make global constant for this:
-                this.Type = "Bot";
+                this.Type = TokenType.Bot;
+            }
+            else
+            {
+                this.Type = TokenType.Bearer;
             }
         }
 
