@@ -64,7 +64,7 @@ namespace DiscordFlat.WebSockets.Listeners
         /// <returns></returns>
         public async Task<T> ReceiveAsync<T>()
         {
-            ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[1000]);
+            ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[2500]);
 
             return await ReceiveAsync<T>(buffer);
         }
@@ -88,13 +88,13 @@ namespace DiscordFlat.WebSockets.Listeners
                     switch (eventName)
                     {
                         case Globals.Events.GuildCreate:
-                            socket.OnGuildCreate(response);
+                            socket.Handler.GuildCreated(response);
                             break;
                         case Globals.Events.MessageCreate:
-                            socket.OnMessage(response);
+                            socket.Handler.MessageReceived(response);
                             break;
                         case Globals.Events.Resumed:
-                            socket.OnResume(response);
+                            socket.Handler.Resumed(response);
                             break;
                     }
                 }

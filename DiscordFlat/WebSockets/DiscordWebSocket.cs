@@ -7,6 +7,7 @@ using DiscordFlat.DTOs.WebSockets.Heartbeats;
 using DiscordFlat.Managers;
 using DiscordFlat.Serialization;
 using DiscordFlat.WebSockets.Caches;
+using DiscordFlat.WebSockets.EventHandlers;
 using DiscordFlat.WebSockets.Listeners;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace DiscordFlat.WebSockets
     {
         public ClientWebSocket Client;
         public DiscordWebSocketCache Cache;
+        public DiscordEventHandler Handler;
 
         private DiscordEventListener listener;
         private Uri uri;
@@ -32,6 +34,7 @@ namespace DiscordFlat.WebSockets
         public DiscordWebSocket()
         {
             listener = new DiscordEventListener(this);
+            Handler = new DiscordEventHandler();
             Cache = new DiscordWebSocketCache();
             uri = new Uri("wss://gateway.discord.gg?v=6&encoding=json");
             cancelToken = new CancellationToken();
@@ -212,7 +215,7 @@ namespace DiscordFlat.WebSockets
         }
 
         /// <summary>
-        /// Called when event CREATE_MESSAGE is fired.
+        /// Called when event MESSAGE_CREATE is fired.
         /// </summary>
         public MessageCreate OnMessage(string response)
         {

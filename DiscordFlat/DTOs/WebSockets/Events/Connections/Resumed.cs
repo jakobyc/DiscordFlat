@@ -11,6 +11,6 @@ namespace DiscordFlat.DTOs.WebSockets.Events.Connections
     public class Resumed : GatewayObject
     {
         [DataMember(Name = "d")]
-        Trace Trace { get; set; }
+        public Trace Trace { get; set; }
     }
 }
