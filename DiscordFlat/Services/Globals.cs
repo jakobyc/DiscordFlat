@@ -17,8 +17,14 @@ namespace DiscordFlat.Services
         {
             public const string GuildCreate = "GUILD_CREATE",
                                 MessageCreate = "MESSAGE_CREATE",
+                                MessageDelete = "MESSAGE_DELETE",
+                                MessageUpdate = "MESSAGE_UPDATE",
+                                PresenceUpdate = "PRESENCE_UPDATE",
                                 Ready = "READY",
-                                Resumed = "RESUMED";
+                                RequestGuildMembers = "REQUEST_GUILD_MEMBERS",
+                                Resumed = "RESUMED",
+                                TypingStart = "TYPING_START",
+                                UserUpdate = "USER_UPDATE";
         }
     }
 }

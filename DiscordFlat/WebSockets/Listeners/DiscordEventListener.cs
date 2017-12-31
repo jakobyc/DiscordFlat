@@ -16,6 +16,8 @@ namespace DiscordFlat.WebSockets.Listeners
     /// </summary>
     public class DiscordEventListener
     {
+        public bool Listening { get; private set; }
+
         private ArraySegment<byte> buffer;
         private JsonSerializer serializer;
         private DiscordWebSocket socket;
@@ -35,7 +37,9 @@ namespace DiscordFlat.WebSockets.Listeners
         {
             if (socket.Client.State == WebSocketState.Open)
             {
+                Listening = true;
                 WebSocketReceiveResult result = await socket.Client.ReceiveAsync(buffer, CancellationToken.None);
+                Listening = false;
                 string response = Encoding.ASCII.GetString(buffer.Array).Replace("\0", "");
 
                 if (!string.IsNullOrEmpty(response))
@@ -55,6 +59,7 @@ namespace DiscordFlat.WebSockets.Listeners
             else
             {
                 await socket.Resume();
+                Listen();
             }
         }
 
@@ -64,7 +69,7 @@ namespace DiscordFlat.WebSockets.Listeners
         /// <returns></returns>
         public async Task<T> ReceiveAsync<T>()
         {
-            ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[2500]);
+            ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[5000]);
 
             return await ReceiveAsync<T>(buffer);
         }
@@ -94,6 +99,9 @@ namespace DiscordFlat.WebSockets.Listeners
                             break;
                         case Globals.Events.Resumed:
                             socket.Handler.Resumed(response);
+                            break;
+                        case Globals.Events.TypingStart:
+                            socket.Handler.TypingStarted(response);
                             break;
                     }
                 }

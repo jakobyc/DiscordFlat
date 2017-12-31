@@ -70,9 +70,13 @@
     <Compile Include="DTOs\WebSockets\Events\Connections\Resumed.cs" />
     <Compile Include="DTOs\WebSockets\Events\Connections\Trace.cs" />
     <Compile Include="DTOs\WebSockets\Events\Guilds\GuildCreate.cs" />
+    <Compile Include="DTOs\WebSockets\Events\Messages\DeletedMessage.cs" />
     <Compile Include="DTOs\WebSockets\Events\Messages\MessageCreate.cs" />
     <Compile Include="DTOs\WebSockets\Events\Connections\Ready.cs" />
     <Compile Include="DTOs\WebSockets\Events\Connections\ReadyResponse.cs" />
+    <Compile Include="DTOs\WebSockets\Events\Messages\MessageDelete.cs" />
+    <Compile Include="DTOs\WebSockets\Events\Messages\TypingStart.cs" />
+    <Compile Include="DTOs\WebSockets\Events\Messages\TypingStartResponse.cs" />
     <Compile Include="DTOs\WebSockets\Game.cs" />
     <Compile Include="DTOs\WebSockets\GatewayBot.cs" />
     <Compile Include="DTOs\WebSockets\GatewayHello.cs" />
@@ -103,10 +107,12 @@
     <Compile Include="Services\Uri\IDiscordUriBuilder.cs" />
     <Compile Include="WebSockets\Caches\DiscordWebSocketCache.cs" />
     <Compile Include="WebSockets\DiscordWebSocket.cs" />
+    <Compile Include="WebSockets\DiscordWebSocketClient.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnGuildCreateEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnHeartbeatEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnReadyEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnResumeEventArgs.cs" />
+    <Compile Include="WebSockets\EventHandlers\Args\DiscordOnTypingStartEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\DiscordEventHandler.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnMessageEventArgs.cs" />
     <Compile Include="WebSockets\Listeners\DiscordEventListener.cs" />

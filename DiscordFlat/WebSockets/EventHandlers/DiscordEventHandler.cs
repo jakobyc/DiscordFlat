@@ -20,6 +20,7 @@ namespace DiscordFlat.WebSockets.EventHandlers
         public event EventHandler<DiscordOnMessageEventArgs> OnMessage;
         public event EventHandler<DiscordOnReadyEventArgs> OnReady;
         public event EventHandler<DiscordOnResumeEventArgs> OnResume;
+        public event EventHandler<DiscordOnTypingStartEventArgs> OnTypingStart;
 
         private JsonSerializer serializer;
 
@@ -143,5 +144,23 @@ namespace DiscordFlat.WebSockets.EventHandlers
         }
         #endregion
 
+        #region Event: TYPING_START
+        public void TypingStarted(string response)
+        {
+            TypingStartResponse typingStart = serializer.Deserialize<TypingStartResponse>(response);
+            DiscordOnTypingStartEventArgs args = new DiscordOnTypingStartEventArgs()
+            {
+                TypingStart = typingStart.EventData
+            };
+
+            OnTypingStartNotify(args);
+        }
+
+        protected void OnTypingStartNotify(DiscordOnTypingStartEventArgs e)
+        {
+            EventHandler<DiscordOnTypingStartEventArgs> handler = OnTypingStart;
+            handler?.Invoke(this, e);
+        }
+        #endregion
     }
 }

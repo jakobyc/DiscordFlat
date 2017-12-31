@@ -6,6 +6,7 @@ using DiscordFlat.DTOs.WebSockets.Events.Messages;
 using DiscordFlat.DTOs.WebSockets.Heartbeats;
 using DiscordFlat.Managers;
 using DiscordFlat.Serialization;
+using DiscordFlat.Services;
 using DiscordFlat.WebSockets.Caches;
 using DiscordFlat.WebSockets.EventHandlers;
 using DiscordFlat.WebSockets.Listeners;
@@ -31,13 +32,18 @@ namespace DiscordFlat.WebSockets
         private CancellationToken cancelToken;
         private JsonSerializer serializer;
 
-        public DiscordWebSocket()
+        public DiscordWebSocket() : this (new Uri("wss://gateway.discord.gg?v=6&encoding=json"), new CancellationToken())
         {
+        }
+
+        public DiscordWebSocket(Uri uri, CancellationToken cancelToken)
+        {
+            this.uri = uri;
+            this.cancelToken = cancelToken;
+
             listener = new DiscordEventListener(this);
             Handler = new DiscordEventHandler();
             Cache = new DiscordWebSocketCache();
-            uri = new Uri("wss://gateway.discord.gg?v=6&encoding=json");
-            cancelToken = new CancellationToken();
             serializer = new JsonSerializer();
         }
 
@@ -119,6 +125,11 @@ namespace DiscordFlat.WebSockets
         /// <returns></returns>
         public async Task Resume()
         {
+            if (Client.State != WebSocketState.Open)
+            {
+                Client = new ClientWebSocket();
+                await Client.ConnectAsync(uri, cancelToken);
+            }
             GatewayResumeObject resumeObj = new GatewayResumeObject();
             resumeObj.Resume = new GatewayResume();
             resumeObj.Resume.Token = Cache.Token.AccessToken;
@@ -129,8 +140,8 @@ namespace DiscordFlat.WebSockets
 
             // Send Gateway Resume payload:
             await SendAsync(message);
+
             // Replay missed events and finish with a Resumed event
-            listener.Listen();
         }
 
         /// <summary>
@@ -181,67 +192,21 @@ namespace DiscordFlat.WebSockets
                     }
 
                     listener.Listen();
+
                     return ready;
                 }
                 // Else resume using a session Id.
                 else
                 {
                     await Resume();
+                    // TODO May need to change this:
+                    return Cache.ReadyResponse;
                 }
             }
 
             // Identification failed, return null.
             return null;
         }
-
-        /// <summary>
-        /// Asynchronously list for events.
-        /// </summary>
-        public void ListenForEvents()
-        {
-            Task t = new Task(() => listener.Listen());
-            t.Start();
-        }
-
-        #region Events:
-        /// <summary>
-        /// Called when event GUILD_CREATE is fired.
-        /// </summary>
-        public GuildCreate OnGuildCreate(string response)
-        {
-            GuildCreate guild = serializer.Deserialize<GuildCreate>(response);
-
-            return guild;
-        }
-
-        /// <summary>
-        /// Called when event MESSAGE_CREATE is fired.
-        /// </summary>
-        public MessageCreate OnMessage(string response)
-        {
-            MessageCreate message = serializer.Deserialize<MessageCreate>(response);
-
-            return message;
-        }
-
-        public Resumed OnResume(string response)
-        {
-            Resumed resumed = serializer.Deserialize<Resumed>(response);
-
-            return resumed;
-        }
-
-        public HeartbeatResponse OnHeartbeat(string response)
-        {
-            HeartbeatResponse beat = serializer.Deserialize<HeartbeatResponse>(response);
-
-            if (beat.OpCode == (int)OpCodes.HeartbeatAcknowledged)
-            {
-
-            }
-            return beat;
-        }
-        #endregion
 
         public void Disconnect()
         {
@@ -252,16 +217,20 @@ namespace DiscordFlat.WebSockets
             catch (Exception) { }
         }
 
-        public async Task RequestGuildMembers()
+        /// <summary>
+        /// Send a request for guild members.
+        /// </summary>
+        /// <param name="query">String that username starts with, or an empty string to return all members.</param>
+        public async Task RequestGuildMembers(string guildId, string query)
         {
             RequestGuildMembers request = new RequestGuildMembers();
             request.EventData = new GuildMembersRequest();
             request.OpCode = (int)OpCodes.RequestGuildMembers;
             request.SequenceNumber = 1;
-            request.EventName = "REQUEST_GUILD_MEMBERS";
-            request.EventData.GuildId = "393599551728123904";
+            request.EventName = Globals.Events.RequestGuildMembers;
+            request.EventData.GuildId = guildId;
             request.EventData.Limit = 0;
-            request.EventData.Query = "";
+            request.EventData.Query = query;
 
             string payload = serializer.Serialize(request);
 
