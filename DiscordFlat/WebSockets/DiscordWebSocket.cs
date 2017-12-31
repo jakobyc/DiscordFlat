@@ -1,7 +1,9 @@
 ﻿using DiscordFlat.DTOs.WebSockets;
-using DiscordFlat.DTOs.WebSockets.Events;
+using DiscordFlat.DTOs.WebSockets.Events.Connections;
 using DiscordFlat.DTOs.WebSockets.Events.Guilds;
+using DiscordFlat.DTOs.WebSockets.Events.Messages;
 using DiscordFlat.DTOs.WebSockets.Heartbeats;
+using DiscordFlat.Managers;
 using DiscordFlat.Serialization;
 using DiscordFlat.WebSockets.Listeners;
 using System;
@@ -26,7 +28,6 @@ namespace DiscordFlat.WebSockets
 
         public DiscordWebSocket()
         {
-            Client = new ClientWebSocket();
             listener = new DiscordEventListener(this);
             uri = new Uri("wss://gateway.discord.gg?v=6&encoding=json");
             cancelToken = new CancellationToken();
@@ -39,14 +40,14 @@ namespace DiscordFlat.WebSockets
         /// <param name="token">Bot access token.</param>
         /// <param name="shardId">Bot shard id.</param>
         /// <returns>Connection status.</returns>
-        public async Task<bool> Connect(string token, int shardId)
+        public async Task<bool> ConnectAndIdentify(string token, int shardId, int shardCount)
         {
             await Client.ConnectAsync(uri, cancelToken);
 
             bool receivedHello = await Hello();
             if (receivedHello)
             {
-                ReadyResponse response = await Identify(token, shardId);
+                ReadyResponse response = await Identify(token, shardId, shardCount);
                 if (response != null)
                 {
                     return true;
@@ -62,6 +63,7 @@ namespace DiscordFlat.WebSockets
         /// <returns>Connection and hello payload status.</returns>
         public async Task<bool> Connect()
         {
+            Client = new ClientWebSocket();
             await Client.ConnectAsync(uri, cancelToken);
 
             return await Hello();
@@ -81,25 +83,45 @@ namespace DiscordFlat.WebSockets
 
                 }
 
-                string sequenceNumber = gatewayObject.SequenceNumber.ToString();
-                if (string.IsNullOrEmpty(sequenceNumber))
+                // Check state again for thread safety:
+                if (Client.State == WebSocketState.Open)
                 {
-                    sequenceNumber = "null";
+                    string sequenceNumber = gatewayObject.SequenceNumber.ToString();
+                    if (string.IsNullOrEmpty(sequenceNumber))
+                    {
+                        sequenceNumber = "null";
+                    }
+
+                    // Send heartbeat:
+                    Heartbeat heartbeat = new Heartbeat();
+                    heartbeat.EventData = sequenceNumber;
+
+                    string message = serializer.Serialize(heartbeat);
+
+                    await SendAsync(message);
+
+                    timer.Reset();
                 }
-
-                // Send heartbeat:
-                Heartbeat heartbeat = new Heartbeat();
-                heartbeat.EventData = sequenceNumber;
-
-                string message = serializer.Serialize(heartbeat);
-
-                await SendAsync(message);
-
-                timer.Reset();
             }
         }
 
-        public async Task<ReadyResponse> Identify(string token, int shardId)
+        public async Task Resume(string token, string sessionId, int? sequenceNumber)
+        {
+            GatewayResumeObject resumeObj = new GatewayResumeObject();
+            resumeObj.Resume = new GatewayResume();
+            resumeObj.Resume.Token = token;
+            resumeObj.Resume.SessionId = sessionId;
+            resumeObj.Resume.SequenceNumber = sequenceNumber;
+
+            string message = serializer.Serialize(resumeObj);
+
+            // Send Gateway Resume payload:
+            await SendAsync(message);
+            // Replay missed events and finish with a Resumed event
+            listener.Listen();
+        }
+
+        public async Task<ReadyResponse> Identify(string token, int shardId, int shardCount)
         {
             ReadyResponse ready = new ReadyResponse();
 
@@ -112,7 +134,7 @@ namespace DiscordFlat.WebSockets
                 identify.EventData.Compress = false;
                 identify.EventData.LargeThreshold = 50;
                 identify.EventData.Token = token;
-                identify.EventData.Shards = new int[] { shardId, 1 };
+                identify.EventData.Shards = new int[] { shardId, shardCount };
 
                 identify.EventData.Properties = new IdentifyConnection();
                 identify.EventData.Properties.OperatingSystem = "Windows";
@@ -123,6 +145,7 @@ namespace DiscordFlat.WebSockets
                 await SendAsync(payload);
 
                 ready = await listener.ReceiveAsync<ReadyResponse>();
+                listener.Listen();
                 return ready;
             }
 
@@ -139,13 +162,53 @@ namespace DiscordFlat.WebSockets
             t.Start();
         }
 
+        #region Events:
         /// <summary>
         /// Called when event GUILD_CREATE is fired.
         /// </summary>
-        /// <param name="response"></param>
-        public void OnGuildCreate(string response)
+        public GuildCreate OnGuildCreate(string response)
         {
             GuildCreate guild = serializer.Deserialize<GuildCreate>(response);
+
+            return guild;
+        }
+
+        /// <summary>
+        /// Called when event CREATE_MESSAGE is fired.
+        /// </summary>
+        public MessageCreate OnMessage(string response)
+        {
+            MessageCreate message = serializer.Deserialize<MessageCreate>(response);
+
+            return message;
+        }
+
+        public Resumed OnResume(string response)
+        {
+            Resumed resumed = serializer.Deserialize<Resumed>(response);
+
+            return resumed;
+        }
+
+        public HeartbeatResponse OnHeartbeat(string response)
+        {
+            HeartbeatResponse beat = serializer.Deserialize<HeartbeatResponse>(response);
+
+            if (beat.OpCode == (int)OpCodes.HeartbeatAcknowledged)
+            {
+
+            }
+            return beat;
+        }
+        #endregion
+
+        public void Disconnect()
+        {
+            try
+            {
+                Client.Abort();
+            }
+            catch (Exception) { }
         }
 
         public async Task RequestGuildMembers()
@@ -162,20 +225,11 @@ namespace DiscordFlat.WebSockets
             string payload = serializer.Serialize(request);
 
             await SendAsync(payload);
-            //await ReceiveAsync<object>();
         }
 
-        public async Task<GuildCreate> GuildCreate()
+        private async Task SendAsync(string payload)
         {
-            ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[3000]);
-
-            GuildCreate dispatch = await listener.ReceiveAsync<GuildCreate>(buffer);
-            return dispatch;
-        }
-
-        private async Task SendAsync(string payloadData)
-        {
-            ArraySegment<byte> message = new ArraySegment<byte>(Encoding.ASCII.GetBytes(payloadData));
+            ArraySegment<byte> message = new ArraySegment<byte>(Encoding.ASCII.GetBytes(payload));
             await Client.SendAsync(message, WebSocketMessageType.Binary, true, CancellationToken.None);
         }
 

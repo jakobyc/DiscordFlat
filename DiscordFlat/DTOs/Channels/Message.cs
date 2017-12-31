@@ -15,8 +15,6 @@ namespace DiscordFlat.DTOs.Channels
         public string Id { get; set; }
         [DataMember(Name = "channel_id")]
         public string ChannelId { get; set; }
-        [DataMember(Name = "author")]
-        public DiscordUser Author { get; set; }
         [DataMember(Name = "content")]
         public string Content { get; set; }
         [DataMember(Name = "timestamp")]
@@ -37,6 +35,20 @@ namespace DiscordFlat.DTOs.Channels
 
         [DataMember(Name = "type")]
         public int Type { get; set; }
+
+        [DataMember(Name = "author")]
+        public DiscordUser Author { get; set; }
+        [DataMember(Name = "mentions")]
+        public DiscordUsers Mentions { get; set; }
+
+        [DataMember(Name = "mention_roles")]
+        public List<string> MentionRoles { get; set; }
+
+        [DataMember(Name = "reactions")]
+        public Reactions Reactions { get; set; }
+
+        [DataMember(Name = "embeds")]
+        public Embeds Embeds { get; set; }
 
         [DataMember(Name = "attachments")]
         public Attachments Attachments { get; set; }

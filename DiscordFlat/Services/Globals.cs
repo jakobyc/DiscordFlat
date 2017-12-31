@@ -17,7 +17,8 @@ namespace DiscordFlat.Services
         {
             public const string GuildCreate = "GUILD_CREATE",
                                 MessageCreate = "MESSAGE_CREATE",
-                                Ready = "READY";
+                                Ready = "READY",
+                                Resumed = "RESUMED";
         }
     }
 }

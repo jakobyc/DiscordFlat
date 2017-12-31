@@ -17,6 +17,6 @@ namespace DiscordFlat.DTOs.WebSockets.Heartbeats
         /// Server should return OpCode 11
         /// </summary>
         [DataMember(Name = "op")]
-        public string OpCode { get; set; }
+        public int? OpCode { get; set; }
     }
 }

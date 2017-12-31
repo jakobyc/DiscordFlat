@@ -1,4 +1,5 @@
-﻿using DiscordFlat.Serialization;
+﻿using DiscordFlat.DTOs.WebSockets;
+using DiscordFlat.Serialization;
 using DiscordFlat.Services;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,6 @@ using System.Threading.Tasks;
 
 namespace DiscordFlat.WebSockets.Listeners
 {
-    public enum Events
-    {
-        GUILD_CREATE
-    }
-
     /// <summary>
     /// Listen for events from a Discord WebSocket server.
     /// </summary>
@@ -42,14 +38,18 @@ namespace DiscordFlat.WebSockets.Listeners
                 WebSocketReceiveResult result = await socket.Client.ReceiveAsync(buffer, CancellationToken.None);
                 string response = Encoding.ASCII.GetString(buffer.Array).Replace("\0", "");
 
-                string eventName = GetEventName(response);
-                string opCode = GetOpCode(response);
+                if (!string.IsNullOrEmpty(response))
+                {
+                    string eventName = GetEventName(response);
+                    string opCode = GetOpCode(response);
 
-                // Asynchronous callback:
-                Task t = new Task(() => Callback(response, eventName, opCode));
-                t.Start();
+                    // Asynchronous callback:
+                    Task t = new Task(() => Callback(response, eventName, opCode));
+                    t.Start();
+                }
 
                 // Recursively listen for events while the socket state is open:
+                buffer = new ArraySegment<byte>(new byte[10000]);
                 Listen();
             }
         }
@@ -77,13 +77,34 @@ namespace DiscordFlat.WebSockets.Listeners
 
         private void Callback(string response, string eventName, string opCode)
         {
-            if (!string.IsNullOrEmpty(eventName))
+            if (!string.IsNullOrEmpty(response))
             {
-                switch(eventName)
+                if (!string.IsNullOrEmpty(eventName))
                 {
-                    case Globals.Events.GuildCreate:
-                        socket.OnGuildCreate(response);
-                        break;
+                    switch (eventName)
+                    {
+                        case Globals.Events.GuildCreate:
+                            socket.OnGuildCreate(response);
+                            break;
+                        case Globals.Events.MessageCreate:
+                            socket.OnMessage(response);
+                            break;
+                        case Globals.Events.Resumed:
+                            socket.OnResume(response);
+                            break;
+                    }
+                }
+
+                int op;
+                bool parsed = int.TryParse(opCode, out op);
+                if (!string.IsNullOrEmpty(opCode) && parsed)
+                {
+                    switch (op)
+                    {
+                        case ((int)OpCodes.HeartbeatAcknowledged):
+                            socket.OnHeartbeat(response);
+                            break;
+                    }
                 }
             }
         }
