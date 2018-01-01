@@ -191,7 +191,7 @@ namespace DiscordFlat.WebSockets
                         Cache.ReadyResponse = ready;
                     }
 
-                    listener.Listen();
+                    await listener.Listen();
 
                     return ready;
                 }

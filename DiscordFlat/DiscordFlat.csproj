@@ -64,6 +64,7 @@
     <Compile Include="DTOs\Guilds\GuildMembers.cs" />
     <Compile Include="DTOs\Guilds\GuildRole.cs" />
     <Compile Include="DTOs\Guilds\GuildRoles.cs" />
+    <Compile Include="DTOs\Guilds\ModifyGuildMember.cs" />
     <Compile Include="DTOs\Guilds\UnavailableGuild.cs" />
     <Compile Include="DTOs\Guilds\UnavailableGuilds.cs" />
     <Compile Include="DTOs\IRetrievable.cs" />

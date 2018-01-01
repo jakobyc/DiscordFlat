@@ -12,7 +12,7 @@ namespace DiscordFlat.Bots
 {
     public class DiscordGatewayBot : IDiscordGatewayBot
     {
-        public BotGuildManager GuildManager;
+        public BotGuildManager GuildManager { get; set; }
 
         private DiscordWebSocketClient client;
         private BotCommands commands;
