@@ -70,6 +70,30 @@ namespace DiscordFlat.WebSockets
         /// <summary>
         /// Add a callback that will occur when the GUILD_CREATE event fires. Supports multiple callbacks.
         /// </summary>
+        public void OnGuildMemberAdd(EventHandler<DiscordOnGuildMemberAddEventArgs> e)
+        {
+            socket.Handler.OnGuildMemberAdd += e;
+        }
+
+        /// <summary>
+        /// Add a callback that will occur when the GUILD_CREATE event fires. Supports multiple callbacks.
+        /// </summary>
+        public void OnGuildMemberRemove(EventHandler<DiscordOnGuildMemberRemoveEventArgs> e)
+        {
+            socket.Handler.OnGuildMemberRemove += e;
+        }
+
+        /// <summary>
+        /// Add a callback that will occur when the GUILD_CREATE event fires. Supports multiple callbacks.
+        /// </summary>
+        public void OnGuildMemberUpdate(EventHandler<DiscordOnGuildMemberUpdateEventArgs> e)
+        {
+            socket.Handler.OnGuildMemberUpdate += e;
+        }
+
+        /// <summary>
+        /// Add a callback that will occur when the GUILD_CREATE event fires. Supports multiple callbacks.
+        /// </summary>
         public void OnHeartbeat(EventHandler<DiscordOnHeartbeatEventArgs> e)
         {
             socket.Handler.OnHeartbeat += e;
@@ -81,6 +105,14 @@ namespace DiscordFlat.WebSockets
         public void OnMessage(EventHandler<DiscordOnMessageEventArgs> e)
         {
             socket.Handler.OnMessage += e;
+        }
+
+        /// <summary>
+        /// Add a callback that will occur when the PRESENCE_UPDATE event fires. Supports multiple callbacks.
+        /// </summary>
+        public void OnPresenceUpdate(EventHandler<DiscordOnPresenceUpdateEventArgs> e)
+        {
+            socket.Handler.OnPresenceUpdate += e;
         }
 
         /// <summary>

@@ -16,6 +16,9 @@ namespace DiscordFlat.Services
         public static class Events
         {
             public const string GuildCreate = "GUILD_CREATE",
+                                GuildMemberAdd = "GUILD_MEMBER_ADD",
+                                GuildMemberRemove = "GUILD_MEMBER_REMOVE",
+                                GuildMemberUpdate = "GUILD_MEMBER_UPDATE",
                                 MessageCreate = "MESSAGE_CREATE",
                                 MessageDelete = "MESSAGE_DELETE",
                                 MessageUpdate = "MESSAGE_UPDATE",

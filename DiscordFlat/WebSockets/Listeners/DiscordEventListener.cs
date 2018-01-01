@@ -103,8 +103,20 @@ namespace DiscordFlat.WebSockets.Listeners
                         case Globals.Events.GuildCreate:
                             socket.Handler.GuildCreated(response);
                             break;
+                        case Globals.Events.GuildMemberAdd:
+                            socket.Handler.GuildMemberAdded(response);
+                            break;
+                        case Globals.Events.GuildMemberRemove:
+                            socket.Handler.GuildMemberRemoved(response);
+                            break;
+                        case Globals.Events.GuildMemberUpdate:
+                            socket.Handler.GuildMemberUpdated(response);
+                            break;
                         case Globals.Events.MessageCreate:
                             socket.Handler.MessageReceived(response);
+                            break;
+                        case Globals.Events.PresenceUpdate:
+                            socket.Handler.PresenceUpdated(response);
                             break;
                         case Globals.Events.Resumed:
                             socket.Handler.Resumed(response);

@@ -24,11 +24,11 @@ namespace DiscordFlat.Bots
             commands = new BotCommands(this.token);
         }
 
-        public async Task Connect(DiscordWebSocketClient client, int shardId, int shardCount)
+        public async Task<bool> Connect(DiscordWebSocketClient client, int shardId, int shardCount)
         {
             this.client = client;
 
-            await client.Connect(token.AccessToken, shardId, shardCount);
+            return await client.Connect(token.AccessToken, shardId, shardCount);
         }
 
         #region Commands

@@ -2,6 +2,7 @@
 using DiscordFlat.DTOs.WebSockets.Events.Connections;
 using DiscordFlat.DTOs.WebSockets.Events.Guilds;
 using DiscordFlat.DTOs.WebSockets.Events.Messages;
+using DiscordFlat.DTOs.WebSockets.Events.Users;
 using DiscordFlat.DTOs.WebSockets.Heartbeats;
 using DiscordFlat.Serialization;
 using DiscordFlat.WebSockets.EventHandlers.Args;
@@ -16,8 +17,12 @@ namespace DiscordFlat.WebSockets.EventHandlers
     public class DiscordEventHandler
     {
         public event EventHandler<DiscordOnGuildCreateEventArgs> OnGuildCreate;
+        public event EventHandler<DiscordOnGuildMemberAddEventArgs> OnGuildMemberAdd;
+        public event EventHandler<DiscordOnGuildMemberRemoveEventArgs> OnGuildMemberRemove;
+        public event EventHandler<DiscordOnGuildMemberUpdateEventArgs> OnGuildMemberUpdate;
         public event EventHandler<DiscordOnHeartbeatEventArgs> OnHeartbeat;
         public event EventHandler<DiscordOnMessageEventArgs> OnMessage;
+        public event EventHandler<DiscordOnPresenceUpdateEventArgs> OnPresenceUpdate;
         public event EventHandler<DiscordOnReadyEventArgs> OnReady;
         public event EventHandler<DiscordOnResumeEventArgs> OnResume;
         public event EventHandler<DiscordOnTypingStartEventArgs> OnTypingStart;
@@ -48,6 +53,75 @@ namespace DiscordFlat.WebSockets.EventHandlers
         protected void OnGuildCreateNotify(DiscordOnGuildCreateEventArgs e)
         {
             EventHandler<DiscordOnGuildCreateEventArgs> handler = OnGuildCreate;
+            handler?.Invoke(this, e);
+        }
+        #endregion
+
+        #region Event: GUILD_MEMBER_ADD
+        /// <summary>
+        /// Invoked when a GUILD_MEMBER_ADD event is fired from Discord's WebSocket server.
+        /// </summary>
+        /// <param name="response">JSON response.</param>
+        public void GuildMemberAdded(string response)
+        {
+            GuildMemberAdd guild = serializer.Deserialize<GuildMemberAdd>(response);
+            DiscordOnGuildMemberAddEventArgs args = new DiscordOnGuildMemberAddEventArgs()
+            {
+                GuildMember = guild.EventData
+            };
+
+            OnGuildMemberAddNotify(args);
+        }
+
+        protected void OnGuildMemberAddNotify(DiscordOnGuildMemberAddEventArgs e)
+        {
+            EventHandler<DiscordOnGuildMemberAddEventArgs> handler = OnGuildMemberAdd;
+            handler?.Invoke(this, e);
+        }
+        #endregion
+
+        #region Event: GUILD_MEMBER_REMOVE
+        /// <summary>
+        /// Invoked when a GUILD_MEMBER_REMOVE event is fired from Discord's WebSocket server.
+        /// </summary>
+        /// <param name="response">JSON response.</param>
+        public void GuildMemberRemoved(string response)
+        {
+            GuildMemberRemove guild = serializer.Deserialize<GuildMemberRemove>(response);
+            DiscordOnGuildMemberRemoveEventArgs args = new DiscordOnGuildMemberRemoveEventArgs()
+            {
+                GuildMember = guild.EventData
+            };
+
+            OnGuildMemberRemoveNotify(args);
+        }
+
+        protected void OnGuildMemberRemoveNotify(DiscordOnGuildMemberRemoveEventArgs e)
+        {
+            EventHandler<DiscordOnGuildMemberRemoveEventArgs> handler = OnGuildMemberRemove;
+            handler?.Invoke(this, e);
+        }
+        #endregion
+
+        #region Event: GUILD_MEMBER_UPDATE
+        /// <summary>
+        /// Invoked when a GUILD_MEMBER_UPDATE event is fired from Discord's WebSocket server.
+        /// </summary>
+        /// <param name="response">JSON response.</param>
+        public void GuildMemberUpdated(string response)
+        {
+            GuildMemberUpdate guild = serializer.Deserialize<GuildMemberUpdate>(response);
+            DiscordOnGuildMemberUpdateEventArgs args = new DiscordOnGuildMemberUpdateEventArgs()
+            {
+                GuildMember = guild.EventData
+            };
+
+            OnGuildMemberUpdateNotify(args);
+        }
+
+        protected void OnGuildMemberUpdateNotify(DiscordOnGuildMemberUpdateEventArgs e)
+        {
+            EventHandler<DiscordOnGuildMemberUpdateEventArgs> handler = OnGuildMemberUpdate;
             handler?.Invoke(this, e);
         }
         #endregion
@@ -94,6 +168,29 @@ namespace DiscordFlat.WebSockets.EventHandlers
         protected void OnMessageNotify(DiscordOnMessageEventArgs e)
         {
             EventHandler<DiscordOnMessageEventArgs> handler = OnMessage;
+            handler?.Invoke(this, e);
+        }
+        #endregion
+
+        #region Event: PRESENCE_UPDATE
+        /// <summary>
+        /// Invoked when a PRESENCE_UPDATE event is fired from Discord's WebSocket server.
+        /// </summary>
+        /// <param name="response">JSON response.</param>
+        public void PresenceUpdated(string response)
+        {
+            PresenceUpdate presence = serializer.Deserialize<PresenceUpdate>(response);
+            DiscordOnPresenceUpdateEventArgs args = new DiscordOnPresenceUpdateEventArgs()
+            {
+                Presence = presence.EventData
+            };
+
+            OnPresenceUpdateNotify(args);
+        }
+
+        protected void OnPresenceUpdateNotify(DiscordOnPresenceUpdateEventArgs e)
+        {
+            EventHandler<DiscordOnPresenceUpdateEventArgs> handler = OnPresenceUpdate;
             handler?.Invoke(this, e);
         }
         #endregion

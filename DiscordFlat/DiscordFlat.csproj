@@ -72,6 +72,12 @@
     <Compile Include="DTOs\WebSockets\Events\Connections\Resumed.cs" />
     <Compile Include="DTOs\WebSockets\Events\Connections\Trace.cs" />
     <Compile Include="DTOs\WebSockets\Events\Guilds\GuildCreate.cs" />
+    <Compile Include="DTOs\WebSockets\Events\Guilds\GuildMemberAdd.cs" />
+    <Compile Include="DTOs\WebSockets\Events\Guilds\GuildMemberAddFields.cs" />
+    <Compile Include="DTOs\WebSockets\Events\Guilds\GuildMemberRemove.cs" />
+    <Compile Include="DTOs\WebSockets\Events\Guilds\GuildMemberRemoveFields.cs" />
+    <Compile Include="DTOs\WebSockets\Events\Guilds\GuildMemberUpdate.cs" />
+    <Compile Include="DTOs\WebSockets\Events\Guilds\GuildMemberUpdateFields.cs" />
     <Compile Include="DTOs\WebSockets\Events\Messages\DeletedMessage.cs" />
     <Compile Include="DTOs\WebSockets\Events\Messages\MessageCreate.cs" />
     <Compile Include="DTOs\WebSockets\Events\Connections\Ready.cs" />
@@ -79,6 +85,9 @@
     <Compile Include="DTOs\WebSockets\Events\Messages\MessageDelete.cs" />
     <Compile Include="DTOs\WebSockets\Events\Messages\TypingStart.cs" />
     <Compile Include="DTOs\WebSockets\Events\Messages\TypingStartResponse.cs" />
+    <Compile Include="DTOs\WebSockets\Events\Users\Game.cs" />
+    <Compile Include="DTOs\WebSockets\Events\Users\Presence.cs" />
+    <Compile Include="DTOs\WebSockets\Events\Users\PresenceUpdate.cs" />
     <Compile Include="DTOs\WebSockets\Game.cs" />
     <Compile Include="DTOs\WebSockets\GatewayBot.cs" />
     <Compile Include="DTOs\WebSockets\GatewayHello.cs" />
@@ -110,8 +119,12 @@
     <Compile Include="WebSockets\Caches\DiscordWebSocketCache.cs" />
     <Compile Include="WebSockets\DiscordWebSocket.cs" />
     <Compile Include="WebSockets\DiscordWebSocketClient.cs" />
+    <Compile Include="WebSockets\EventHandlers\Args\DiscordGuildMemberRemoveEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnGuildCreateEventArgs.cs" />
+    <Compile Include="WebSockets\EventHandlers\Args\DiscordOnGuildMemberAddEventArgs.cs" />
+    <Compile Include="WebSockets\EventHandlers\Args\DiscordOnGuildMemberUpdateEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnHeartbeatEventArgs.cs" />
+    <Compile Include="WebSockets\EventHandlers\Args\DiscordOnPresenceUpdateEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnReadyEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnResumeEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnTypingStartEventArgs.cs" />
