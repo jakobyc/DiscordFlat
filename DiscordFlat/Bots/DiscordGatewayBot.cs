@@ -1,4 +1,5 @@
 ﻿using DiscordFlat.Bots.Commands;
+using DiscordFlat.Bots.Roles;
 using DiscordFlat.DTOs.Authorization;
 using DiscordFlat.WebSockets;
 using System;
@@ -9,8 +10,10 @@ using System.Threading.Tasks;
 
 namespace DiscordFlat.Bots
 {
-    public class DiscordGatewayBot
+    public class DiscordGatewayBot : IDiscordGatewayBot
     {
+        public BotGuildManager GuildManager;
+
         private DiscordWebSocketClient client;
         private BotCommands commands;
         private TokenResponse token;
@@ -22,6 +25,7 @@ namespace DiscordFlat.Bots
                 AccessToken = token
             };
             commands = new BotCommands(this.token);
+            GuildManager = new BotGuildManager(this.token);
         }
 
         public async Task<bool> Connect(DiscordWebSocketClient client, int shardId, int shardCount)
@@ -47,5 +51,10 @@ namespace DiscordFlat.Bots
             client.OnMessage(commands.ReadMessage);
         }
         #endregion
+
+        public void AddRoleOnJoin(string roleId)
+        {
+            GuildManager.AddRoleOnJoin(client, roleId);
+        }
     }
 }

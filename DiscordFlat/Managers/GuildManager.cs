@@ -90,7 +90,9 @@ namespace DiscordFlat.Managers
         public GuildRole GetRole(GuildRoles roles, string roleName)
         {
             GuildRole role = new GuildRole();
-            role = roles.Where(x => x.Name == roleName).FirstOrDefault();
+
+            roleName = roleName.ToUpper();
+            role = roles.Where(x => x.Name.ToUpper() == roleName).FirstOrDefault();
 
             return role;
         }

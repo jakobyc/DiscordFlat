@@ -43,6 +43,8 @@
   <ItemGroup>
     <Compile Include="Bots\Commands\BotCommands.cs" />
     <Compile Include="Bots\DiscordGatewayBot.cs" />
+    <Compile Include="Bots\IDiscordGatewayBot.cs" />
+    <Compile Include="Bots\Managers\BotGuildManager.cs" />
     <Compile Include="DiscordClient.cs" />
     <Compile Include="DTOs\Authorization\GrantType.cs" />
     <Compile Include="DTOs\Channels\Attachment.cs" />
@@ -119,7 +121,7 @@
     <Compile Include="WebSockets\Caches\DiscordWebSocketCache.cs" />
     <Compile Include="WebSockets\DiscordWebSocket.cs" />
     <Compile Include="WebSockets\DiscordWebSocketClient.cs" />
-    <Compile Include="WebSockets\EventHandlers\Args\DiscordGuildMemberRemoveEventArgs.cs" />
+    <Compile Include="WebSockets\EventHandlers\Args\DiscordOnGuildMemberRemoveEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnGuildCreateEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnGuildMemberAddEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnGuildMemberUpdateEventArgs.cs" />

@@ -20,7 +20,7 @@ namespace DiscordFlat.Managers
             this.deserializer = new JsonDeserializer();
         }
 
-        public DiscordUser GetUser(TokenResponse tokenResponse)
+        public DiscordUser GetCurrentUser(TokenResponse tokenResponse)
         {
             DiscordUser user = new DiscordUser();
             using (WebClient client = new WebClient())
