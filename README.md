@@ -2,7 +2,7 @@
 .NET wrapper for Discord's API (https://discordapp.com/developers/docs/intro)
 
 ## How to use:
-### WebSocket client:
+### WebSocket Client:
 ```
 DiscordWebSocketClient client = new DiscordWebSocketClient();
 DiscordGatewayBot bot = new DiscordGatewayBot("token");
