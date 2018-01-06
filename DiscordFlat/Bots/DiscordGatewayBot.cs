@@ -48,7 +48,7 @@ namespace DiscordFlat.Bots
 
         public void ListenForCommands()
         {
-            //client.OnMessage(commands.ReadMessage);
+            client.OnMessage(commands.ReadMessage);
         }
         #endregion
 

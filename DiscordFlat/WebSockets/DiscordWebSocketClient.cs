@@ -107,11 +107,6 @@ namespace DiscordFlat.WebSockets
             socket.Handler.OnMessage += e;
         }
 
-        public void OnMessageUnsubscribe(EventHandler<DiscordOnMessageEventArgs> e)
-        {
-            socket.Handler.OnMessage -= e;
-        }
-
         /// <summary>
         /// Add a callback that will occur when the PRESENCE_UPDATE event fires. Supports multiple callbacks.
         /// </summary>
