@@ -108,7 +108,9 @@ namespace DiscordFlat.Managers
         // TODO: Not functional:
         public bool ModifyUser(TokenResponse tokenResponse, ModifyGuildMember modification, string guildId, string userId)
         {
-            using (WebClient client = new WebClient())
+            throw new Exception("ModifyUser is not functional yet.");
+
+            /*using (WebClient client = new WebClient())
             {
                 client.Headers.Add(HttpRequestHeader.Authorization, tokenResponse.Type + " " + tokenResponse.AccessToken);
                 try
@@ -129,7 +131,7 @@ namespace DiscordFlat.Managers
                 catch (Exception) { }
 
                 return false;
-            }
+            }*/
         }
 
         public bool RemoveRoleFromUser(TokenResponse tokenResponse, string guildId, string userId, string roleId)

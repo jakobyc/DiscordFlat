@@ -85,17 +85,12 @@ namespace DiscordFlat.WebSockets
         /// </summary>
         protected async void Heartbeat(HelloObject gatewayObject)
         {
-            Stopwatch timer = new Stopwatch();
+            CancellationTokenSource heartbeatWait = new CancellationTokenSource();
 
             while (Client.State == WebSocketState.Open)
             {
-                timer.Start();
-
                 // Wait to send the heartbeat based on the heartbeat interval:
-                while (timer.ElapsedMilliseconds < gatewayObject.EventData.HeartbeatInterval - 1000)
-                {
-
-                }
+                heartbeatWait.Token.WaitHandle.WaitOne(gatewayObject.EventData.HeartbeatInterval - 1000);
 
                 // Check state again for thread safety:
                 if (Client.State == WebSocketState.Open)
@@ -113,8 +108,6 @@ namespace DiscordFlat.WebSockets
                     string message = serializer.Serialize(heartbeat);
 
                     await SendAsync(message);
-
-                    timer.Reset();
                 }
             }
         }
@@ -128,7 +121,8 @@ namespace DiscordFlat.WebSockets
             if (Client.State != WebSocketState.Open)
             {
                 Client = new ClientWebSocket();
-                await Client.ConnectAsync(uri, cancelToken);
+                await Connect();
+                //await Client.ConnectAsync(uri, cancelToken);
             }
             GatewayResumeObject resumeObj = new GatewayResumeObject();
             resumeObj.Resume = new GatewayResume();
@@ -147,10 +141,6 @@ namespace DiscordFlat.WebSockets
         /// <summary>
         /// Attempt to send an Identify request to the server WebSocket. If previously identified, a Resume request will be sent instead.
         /// </summary>
-        /// <param name="token"></param>
-        /// <param name="shardId"></param>
-        /// <param name="shardCount"></param>
-        /// <returns></returns>
         public async Task<ReadyResponse> Identify(string token, int shardId, int shardCount)
         {
             ReadyResponse ready = new ReadyResponse();
@@ -191,7 +181,9 @@ namespace DiscordFlat.WebSockets
                         Cache.ReadyResponse = ready;
                     }
 
-                    await listener.Listen();
+                    // Listen on a new thread:
+                    Task t = new Task(async () => await listener.Listen());
+                    t.Start();
 
                     return ready;
                 }

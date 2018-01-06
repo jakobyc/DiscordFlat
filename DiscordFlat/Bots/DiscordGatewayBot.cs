@@ -12,7 +12,7 @@ namespace DiscordFlat.Bots
 {
     public class DiscordGatewayBot : IDiscordGatewayBot
     {
-        public BotGuildManager GuildManager { get; set; }
+        public BotGuildManager Guilds { get; set; }
 
         private DiscordWebSocketClient client;
         private BotCommands commands;
@@ -25,7 +25,7 @@ namespace DiscordFlat.Bots
                 AccessToken = token
             };
             commands = new BotCommands(this.token);
-            GuildManager = new BotGuildManager(this.token);
+            Guilds = new BotGuildManager(this.token);
         }
 
         public async Task<bool> Connect(DiscordWebSocketClient client, int shardId, int shardCount)
@@ -48,13 +48,13 @@ namespace DiscordFlat.Bots
 
         public void ListenForCommands()
         {
-            client.OnMessage(commands.ReadMessage);
+            //client.OnMessage(commands.ReadMessage);
         }
         #endregion
 
         public void AddRoleOnJoin(string roleId)
         {
-            GuildManager.AddRoleOnJoin(client, roleId);
+            Guilds.AddRoleOnJoin(client, roleId);
         }
     }
 }

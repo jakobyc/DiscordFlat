@@ -6,7 +6,7 @@ namespace DiscordFlat.Bots
 {
     public interface IDiscordGatewayBot
     {
-        BotGuildManager GuildManager { get; set; }
+        BotGuildManager Guilds { get; set; }
 
         void AddCommand(string command, string message);
         Task<bool> Connect(DiscordWebSocketClient client, int shardId, int shardCount);
