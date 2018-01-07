@@ -7,7 +7,7 @@
 DiscordWebSocketClient client = new DiscordWebSocketClient();
 DiscordGatewayBot bot = new DiscordGatewayBot("token");
 
-bool connected = await bot.Connect(client, shardId, shardCount);
+bool connected = await bot.Connect(client);
 
 if (connected)
 {
