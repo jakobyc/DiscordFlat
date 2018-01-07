@@ -9,7 +9,7 @@ namespace DiscordFlat.Bots
         BotGuildManager Guilds { get; set; }
 
         void AddCommand(string command, string message);
-        Task<bool> Connect(DiscordWebSocketClient client, int shardId, int shardCount);
+        Task<bool> Connect(DiscordWebSocketClient client);
         void ListenForCommands();
     }
 }

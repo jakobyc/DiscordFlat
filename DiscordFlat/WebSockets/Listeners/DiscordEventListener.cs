@@ -35,41 +35,45 @@ namespace DiscordFlat.WebSockets.Listeners
         /// </summary>
         public async Task Listen()
         {
-            if (socket.Client.State == WebSocketState.Open)
+            try
             {
-                Listening = true;
-                WebSocketReceiveResult result = null;
-                do
+                if (socket.Client.State == WebSocketState.Open)
                 {
-                    result = await socket.Client.ReceiveAsync(buffer, CancellationToken.None);
-                }
-                while (!result.EndOfMessage);
-                Listening = false;
-                
-                if (result.Count > 0)
-                {
-                    string response = Encoding.ASCII.GetString(buffer.Array).Replace("\0", "");
-
-                    if (!string.IsNullOrEmpty(response))
+                    Listening = true;
+                    WebSocketReceiveResult result = null;
+                    do
                     {
-                        string eventName = GetEventName(response);
-                        string opCode = GetOpCode(response);
-
-                        // Asynchronous callback:
-                        Task t = new Task(() => Callback(response, eventName, opCode));
-                        t.Start();
+                        result = await socket.Client.ReceiveAsync(buffer, CancellationToken.None);
                     }
-                }
+                    while (!result.EndOfMessage);
+                    Listening = false;
 
-                // Recursively listen for events while the socket state is open:
-                buffer = new ArraySegment<byte>(new byte[10000]);
-                await Listen();
+                    if (result.Count > 0)
+                    {
+                        string response = Encoding.ASCII.GetString(buffer.Array).Replace("\0", "");
+
+                        if (!string.IsNullOrEmpty(response))
+                        {
+                            string eventName = GetEventName(response);
+                            string opCode = GetOpCode(response);
+
+                            // Asynchronous callback:
+                            Task t = new Task(() => Callback(response, eventName, opCode));
+                            t.Start();
+                        }
+                    }
+
+                    // Recursively listen for events while the socket state is open:
+                    buffer = new ArraySegment<byte>(new byte[10000]);
+                    await Listen();
+                }
+                else
+                {
+                    await socket.Resume();
+                    await Listen();
+                }
             }
-            else
-            {
-                await socket.Resume();
-                await Listen();
-            }
+            catch (Exception) { }
         }
 
         /// <summary>

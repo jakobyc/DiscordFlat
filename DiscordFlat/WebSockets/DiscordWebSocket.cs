@@ -229,6 +229,15 @@ namespace DiscordFlat.WebSockets
             await SendAsync(payload);
         }
 
+        public WebSocketState GetSocketState()
+        {
+            if (Client != null)
+            {
+                return Client.State;
+            }
+            return WebSocketState.Closed;
+        }
+
         private async Task SendAsync(string payload)
         {
             ArraySegment<byte> message = new ArraySegment<byte>(Encoding.ASCII.GetBytes(payload));

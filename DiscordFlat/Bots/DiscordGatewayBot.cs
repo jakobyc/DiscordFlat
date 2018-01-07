@@ -28,11 +28,11 @@ namespace DiscordFlat.Bots
             Guilds = new BotGuildManager(this.token);
         }
 
-        public async Task<bool> Connect(DiscordWebSocketClient client, int shardId, int shardCount)
+        public async Task<bool> Connect(DiscordWebSocketClient client)
         {
             this.client = client;
 
-            return await client.Connect(token.AccessToken, shardId, shardCount);
+            return await client.Connect(token.AccessToken);
         }
 
         #region Commands
