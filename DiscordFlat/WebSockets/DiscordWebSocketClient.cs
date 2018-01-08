@@ -70,7 +70,7 @@ namespace DiscordFlat.WebSockets
 
             if (ready != null)
             {
-                shardCount++;
+                shardId++;
                 return true;
             }
 
@@ -171,6 +171,14 @@ namespace DiscordFlat.WebSockets
         public void OnPresenceUpdate(EventHandler<DiscordOnPresenceUpdateEventArgs> e)
         {
             socket.Handler.OnPresenceUpdate += e;
+        }
+
+        /// <summary>
+        /// Add a callback that will occur when the READY event fires. Supports multiple callbacks.
+        /// </summary>
+        public void OnReady(EventHandler<DiscordOnReadyEventArgs> e)
+        {
+            socket.Handler.OnReady += e;
         }
 
         /// <summary>

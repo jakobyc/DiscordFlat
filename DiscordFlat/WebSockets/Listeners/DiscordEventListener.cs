@@ -1,4 +1,5 @@
 ﻿using DiscordFlat.DTOs.WebSockets;
+using DiscordFlat.DTOs.WebSockets.Events.Connections;
 using DiscordFlat.Serialization;
 using DiscordFlat.Services;
 using System;
@@ -93,6 +94,12 @@ namespace DiscordFlat.WebSockets.Listeners
             string result = Encoding.ASCII.GetString(buffer.Array).Replace("\0", "");
             T response = serializer.Deserialize<T>(result);
 
+            // If the response is a ReadyResponse, invoke callback(s):
+            if (response is ReadyResponse)
+            {
+                Callback(result, Globals.Events.Ready, ((int)OpCodes.Identify).ToString());
+            }
+
             return response;
         }
 
@@ -122,6 +129,11 @@ namespace DiscordFlat.WebSockets.Listeners
                         case Globals.Events.PresenceUpdate:
                             socket.Handler.PresenceUpdated(response);
                             break;
+                        case Globals.Events.Ready:
+                            socket.Handler.IsReady(response);
+                            // Update socket's cache:
+                            socket.Cache.ReadyResponse = serializer.Deserialize<ReadyResponse>(response);
+                            break;
                         case Globals.Events.Resumed:
                             socket.Handler.Resumed(response);
                             break;
@@ -139,6 +151,22 @@ namespace DiscordFlat.WebSockets.Listeners
                     {
                         case ((int)OpCodes.HeartbeatAcknowledged):
                             socket.Handler.HeartbeatAcknowledged(response);
+                            break;
+                        case ((int)OpCodes.Reconnect):
+                            #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                            socket.Resume();
+                            #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                            break;
+                        case ((int)OpCodes.InvalidSession):
+                            InvalidSession session = serializer.Deserialize<InvalidSession>(response);
+                            if (session.Resumable)
+                            {
+                                socket.Resume();
+                            }
+                            else
+                            {
+                                socket.Identify("", 0, 1);
+                            }
                             break;
                     }
                 }

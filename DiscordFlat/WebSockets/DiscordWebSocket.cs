@@ -31,6 +31,7 @@ namespace DiscordFlat.WebSockets
         private Uri uri;
         private CancellationToken cancelToken;
         private JsonSerializer serializer;
+        private bool listening = false;
 
         public DiscordWebSocket() : this (new Uri("wss://gateway.discord.gg?v=6&encoding=json"), new CancellationToken())
         {
@@ -107,7 +108,11 @@ namespace DiscordFlat.WebSockets
 
                     string message = serializer.Serialize(heartbeat);
 
-                    await SendAsync(message);
+                    try
+                    {
+                        await SendAsync(message);
+                    }
+                    catch(Exception) { }
                 }
             }
         }
@@ -154,46 +159,38 @@ namespace DiscordFlat.WebSockets
 
             if (Client.State == WebSocketState.Open)
             {
-                // If we haven't sent an Identify request previously, start one.
-                if (Cache.ReadyResponse == null)
+                IdentifyObject identify = new IdentifyObject();
+                identify.OpCode = 2;
+
+                identify.EventData = new Identify();
+                identify.EventData.Compress = false;
+                identify.EventData.LargeThreshold = 50;
+                identify.EventData.Token = Cache.Token.AccessToken;
+                identify.EventData.Shards = new int[] { shardId, shardCount };
+
+                identify.EventData.Properties = new IdentifyConnection();
+                identify.EventData.Properties.OperatingSystem = "Windows";
+                identify.EventData.Properties.Browser = "Library";
+                identify.EventData.Properties.Device = "Library";
+
+                string payload = serializer.Serialize(identify);
+                await SendAsync(payload);
+
+                // Listen on a new thread:
+                if (!listening)
                 {
-                    IdentifyObject identify = new IdentifyObject();
-                    identify.OpCode = 2;
-
-                    identify.EventData = new Identify();
-                    identify.EventData.Compress = false;
-                    identify.EventData.LargeThreshold = 50;
-                    identify.EventData.Token = Cache.Token.AccessToken;
-                    identify.EventData.Shards = new int[] { shardId, shardCount };
-
-                    identify.EventData.Properties = new IdentifyConnection();
-                    identify.EventData.Properties.OperatingSystem = "Windows";
-                    identify.EventData.Properties.Browser = "Library";
-                    identify.EventData.Properties.Device = "Library";
-
-                    string payload = serializer.Serialize(identify);
-                    await SendAsync(payload);
-
                     ready = await listener.ReceiveAsync<ReadyResponse>();
-
                     if (ready != null)
                     {
                         Cache.ReadyResponse = ready;
                     }
 
-                    // Listen on a new thread:
                     Task t = new Task(async () => await listener.Listen());
-                    t.Start();
+                    listening = true;
 
-                    return ready;
+                    t.Start();
                 }
-                // Else resume using a session Id.
-                else
-                {
-                    await Resume();
-                    // TODO May need to change this:
-                    return Cache.ReadyResponse;
-                }
+                return ready;
             }
 
             // Identification failed, return null.
