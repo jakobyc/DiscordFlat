@@ -128,9 +128,11 @@
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnGuildMemberAddEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnGuildMemberUpdateEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnHeartbeatEventArgs.cs" />
+    <Compile Include="WebSockets\EventHandlers\Args\DiscordOnHeartbeatRequestEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnPresenceUpdateEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnReadyEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnResumeEventArgs.cs" />
+    <Compile Include="WebSockets\EventHandlers\Args\DiscordOnStateChangeEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnTypingStartEventArgs.cs" />
     <Compile Include="WebSockets\EventHandlers\DiscordEventHandler.cs" />
     <Compile Include="WebSockets\EventHandlers\Args\DiscordOnMessageEventArgs.cs" />

@@ -9,6 +9,7 @@ using DiscordFlat.WebSockets.EventHandlers.Args;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,10 +22,12 @@ namespace DiscordFlat.WebSockets.EventHandlers
         public event EventHandler<DiscordOnGuildMemberRemoveEventArgs> OnGuildMemberRemove;
         public event EventHandler<DiscordOnGuildMemberUpdateEventArgs> OnGuildMemberUpdate;
         public event EventHandler<DiscordOnHeartbeatEventArgs> OnHeartbeat;
+        public event EventHandler<DiscordOnHeartbeatRequestEventArgs> OnHeartbeatRequest;
         public event EventHandler<DiscordOnMessageEventArgs> OnMessage;
         public event EventHandler<DiscordOnPresenceUpdateEventArgs> OnPresenceUpdate;
         public event EventHandler<DiscordOnReadyEventArgs> OnReady;
         public event EventHandler<DiscordOnResumeEventArgs> OnResume;
+        public event EventHandler<DiscordOnStateChangeEventArgs> OnStateChange;
         public event EventHandler<DiscordOnTypingStartEventArgs> OnTypingStart;
 
         private JsonSerializer serializer;
@@ -126,9 +129,9 @@ namespace DiscordFlat.WebSockets.EventHandlers
         }
         #endregion
 
-        #region Event: Heartbeat
+        #region Event: Heartbeat ACK
         /// <summary>
-        /// Invoked when a GUILD_CREATE event is fired from Discord's WebSocket server.
+        /// Invoked when a Heartbeat Acknowledged event is fired from Discord's WebSocket server.
         /// </summary>
         /// <param name="response">JSON response.</param>
         public void HeartbeatAcknowledged(string response)
@@ -145,6 +148,29 @@ namespace DiscordFlat.WebSockets.EventHandlers
         protected void OnHeartbeatNotify(DiscordOnHeartbeatEventArgs e)
         {
             EventHandler<DiscordOnHeartbeatEventArgs> handler = OnHeartbeat;
+            handler?.Invoke(this, e);
+        }
+        #endregion
+
+        #region Event: Heartbeat Request
+        /// <summary>
+        /// Invoked when a Discord's WebSocket server requests a heartbeat from our client.
+        /// </summary>
+        /// <param name="response">JSON response.</param>
+        public void HeartbeatRequested(string response)
+        {
+            Heartbeat heartbeat = serializer.Deserialize<Heartbeat>(response);
+            DiscordOnHeartbeatRequestEventArgs args = new DiscordOnHeartbeatRequestEventArgs()
+            {
+                Heartbeat = heartbeat
+            };
+
+            OnHeartbeatRequestNotify(args);
+        }
+
+        protected void OnHeartbeatRequestNotify(DiscordOnHeartbeatRequestEventArgs e)
+        {
+            EventHandler<DiscordOnHeartbeatRequestEventArgs> handler = OnHeartbeatRequest;
             handler?.Invoke(this, e);
         }
         #endregion
@@ -237,6 +263,28 @@ namespace DiscordFlat.WebSockets.EventHandlers
         protected void OnResumeNotify(DiscordOnResumeEventArgs e)
         {
             EventHandler<DiscordOnResumeEventArgs> handler = OnResume;
+            handler?.Invoke(this, e);
+        }
+        #endregion
+
+        #region Event: Socket State Change
+        /// <summary>
+        /// Invoked when a RESUMED event is fired from Discord's WebSocket server.
+        /// </summary>
+        /// <param name="response">JSON response.</param>
+        public void StateChanged(WebSocketState state)
+        {
+            DiscordOnStateChangeEventArgs args = new DiscordOnStateChangeEventArgs()
+            {
+                State = state
+            };
+
+            OnStateChangeNotify(args);
+        }
+
+        protected void OnStateChangeNotify(DiscordOnStateChangeEventArgs e)
+        {
+            EventHandler<DiscordOnStateChangeEventArgs> handler = OnStateChange;
             handler?.Invoke(this, e);
         }
         #endregion

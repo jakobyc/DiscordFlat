@@ -70,11 +70,17 @@ namespace DiscordFlat.WebSockets.Listeners
                 }
                 else
                 {
+                    StateChange(socket.GetSocketState());
                     await socket.Resume();
                     await Listen();
                 }
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                StateChange(socket.GetSocketState());
+                await socket.Resume();
+                await Listen();
+            }
         }
 
         /// <summary>
@@ -149,6 +155,10 @@ namespace DiscordFlat.WebSockets.Listeners
                 {
                     switch (op)
                     {
+                        // Heartbeat request from WebSocket server:
+                        case ((int)OpCodes.Heartbeat):
+                            socket.Handler.HeartbeatRequested(response);
+                            break;
                         case ((int)OpCodes.HeartbeatAcknowledged):
                             socket.Handler.HeartbeatAcknowledged(response);
                             break;
@@ -161,16 +171,24 @@ namespace DiscordFlat.WebSockets.Listeners
                             InvalidSession session = serializer.Deserialize<InvalidSession>(response);
                             if (session.Resumable)
                             {
+                                // TODO: Await support
                                 socket.Resume();
                             }
                             else
                             {
+                                // TODO: Await support
+                                // TODO: Remove hard-coded shard info:
                                 socket.Identify("", 0, 1);
                             }
                             break;
                     }
                 }
             }
+        }
+
+        private void StateChange(WebSocketState state)
+        {
+            socket.Handler.StateChanged(state);
         }
 
         private string GetEventName(string response)

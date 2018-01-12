@@ -158,6 +158,14 @@ namespace DiscordFlat.WebSockets
         }
 
         /// <summary>
+        /// Add a callback that will occur when the WebSocket server requests a heartbeat from our client. Supports multiple callbacks.
+        /// </summary>
+        public void OnHeartbeatRequest(EventHandler<DiscordOnHeartbeatRequestEventArgs> e)
+        {
+            socket.Handler.OnHeartbeatRequest += e;
+        }
+
+        /// <summary>
         /// Add a callback that will occur when the MESSAGE_CREATE event fires. Supports multiple callbacks.
         /// </summary>
         public void OnMessage(EventHandler<DiscordOnMessageEventArgs> e)
@@ -187,6 +195,14 @@ namespace DiscordFlat.WebSockets
         public void OnResume(EventHandler<DiscordOnResumeEventArgs> e)
         {
             socket.Handler.OnResume += e;
+        }
+
+        /// <summary>
+        /// Add a callback that will occur when the socket's state changes. Supports multiple callbacks.
+        /// </summary>
+        public void OnStateChange(EventHandler<DiscordOnStateChangeEventArgs> e)
+        {
+            socket.Handler.OnStateChange += e;
         }
 
         /// <summary>

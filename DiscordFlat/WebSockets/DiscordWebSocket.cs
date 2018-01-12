@@ -65,7 +65,7 @@ namespace DiscordFlat.WebSockets
                     return true;
                 }
             }
-
+            
             return false;
         }
 
@@ -101,7 +101,7 @@ namespace DiscordFlat.WebSockets
                     {
                         sequenceNumber = "null";
                     }
-
+                    
                     // Send heartbeat:
                     Heartbeat heartbeat = new Heartbeat();
                     heartbeat.EventData = sequenceNumber;
