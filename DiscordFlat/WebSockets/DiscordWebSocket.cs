@@ -26,12 +26,15 @@ namespace DiscordFlat.WebSockets
         public ClientWebSocket Client;
         public DiscordWebSocketCache Cache;
         public DiscordEventHandler Handler;
+        public Task HeartBeat;
+        public Task EventListener;
 
         private DiscordEventListener listener;
         private Uri uri;
         private CancellationToken cancelToken;
         private JsonSerializer serializer;
         private bool listening = false;
+        private bool heartBeating = false;
 
         public DiscordWebSocket() : this (new Uri("wss://gateway.discord.gg?v=6&encoding=json"), new CancellationToken())
         {
@@ -84,24 +87,25 @@ namespace DiscordFlat.WebSockets
         /// <summary>
         /// Heartbeat loop for the WebSocket connection.
         /// </summary>
-        protected async void Heartbeat(HelloObject gatewayObject)
+        protected async void Heartbeat(HelloObject gatewayObject, CancellationTokenSource heartbeatCancelToken)
         {
-            CancellationTokenSource heartbeatWait = new CancellationTokenSource();
+            heartBeating = true;
 
-            while (Client.State == WebSocketState.Open)
+            while (Client.State == WebSocketState.Open && heartBeating)
             {
                 // Wait to send the heartbeat based on the heartbeat interval:
-                heartbeatWait.Token.WaitHandle.WaitOne(gatewayObject.EventData.HeartbeatInterval - 1000);
+                heartbeatCancelToken.Token.WaitHandle.WaitOne(gatewayObject.EventData.HeartbeatInterval);
 
                 // Check state again for thread safety:
                 if (Client.State == WebSocketState.Open)
                 {
+                    // TODO: Cache sequence number:
                     string sequenceNumber = gatewayObject.SequenceNumber.ToString();
                     if (string.IsNullOrEmpty(sequenceNumber))
                     {
                         sequenceNumber = "null";
                     }
-                    
+
                     // Send heartbeat:
                     Heartbeat heartbeat = new Heartbeat();
                     heartbeat.EventData = sequenceNumber;
@@ -112,7 +116,7 @@ namespace DiscordFlat.WebSockets
                     {
                         await SendAsync(message);
                     }
-                    catch(Exception) { }
+                    catch (Exception) { }
                 }
             }
         }
@@ -176,6 +180,13 @@ namespace DiscordFlat.WebSockets
                 string payload = serializer.Serialize(identify);
                 await SendAsync(payload);
 
+                // Cleanup cancelled listener:
+                if (EventListener != null && (EventListener.IsCanceled || EventListener.IsFaulted))
+                {
+                    EventListener.Dispose();
+                    listening = false;
+                }
+
                 // Listen on a new thread:
                 if (!listening)
                 {
@@ -184,12 +195,17 @@ namespace DiscordFlat.WebSockets
                     {
                         Cache.ReadyResponse = ready;
                     }
-
-                    Task t = new Task(async () => await listener.Listen());
+                    
+                    EventListener = new Task(async () => await listener.Listen());
+                    EventListener.Start();
                     listening = true;
 
-                    t.Start();
+                    /*Task t = new Task(async () => await listener.Listen());
+                    listening = true;
+
+                    t.Start();*/
                 }
+
                 return ready;
             }
 
@@ -201,6 +217,15 @@ namespace DiscordFlat.WebSockets
         {
             try
             {
+                // Disconnect listener:
+                listener.CancelToken.Cancel();
+                EventListener.Wait();
+                EventListener.Dispose();
+
+                // Disconnect heartbeat:
+                HeartBeat.Wait();
+                HeartBeat.Dispose();
+
                 Client.Abort();
             }
             catch (Exception) { }
@@ -249,9 +274,21 @@ namespace DiscordFlat.WebSockets
             // Spin up thread for heartbeat:
             if (response.OpCode == (int)OpCodes.Hello)
             {
-                Task t = new Task(() => Heartbeat(response));
-                t.Start();
+                // If currently heartbeating, finish up the current heartbeat, and create a new one:
+                if (HeartBeat != null)
+                {
+                    heartBeating = false;
+                    HeartBeat.Wait();
+                    HeartBeat.Dispose();
+                }
+                HeartBeat = new Task(() => Heartbeat(response, new CancellationTokenSource()));
+                HeartBeat.Start();
 
+                /*if (!heartBeating)
+                {
+                    Task t = new Task(() => Heartbeat(response, new CancellationTokenSource()));
+                    t.Start();
+                }*/
                 return true;
             }
             else
