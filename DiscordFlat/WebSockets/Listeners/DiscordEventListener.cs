@@ -61,6 +61,7 @@ namespace DiscordFlat.WebSockets.Listeners
                             {
                                 string eventName = GetEventName(response);
                                 string opCode = GetOpCode(response);
+                                CacheSequence(response);
 
                                 // Asynchronous callback:
                                 Task t = new Task(() => Callback(response, eventName, opCode));
@@ -184,14 +185,18 @@ namespace DiscordFlat.WebSockets.Listeners
                             InvalidSession session = serializer.Deserialize<InvalidSession>(response);
                             if (session.Resumable)
                             {
-                                // TODO: Await support
+                                #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                                 socket.Resume();
+                                #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
                             }
                             else
                             {
-                                // TODO: Await support
+                                #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                                 // TODO: Remove hard-coded shard info:
                                 socket.Identify("", 0, 1);
+                                #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
                             }
                             break;
                     }
@@ -232,6 +237,29 @@ namespace DiscordFlat.WebSockets.Listeners
             }
 
             return opCode;
+        }
+
+        /// <summary>
+        /// Cache the sequence number received from Discord's WebSocket server.
+        /// </summary>
+        private void CacheSequence(string response)
+        {
+            int index = response.IndexOf("\"s\":") + ("\"s\":").Length;
+            int eventIndex = response.IndexOf(',', index + 1);
+
+            string eventName = response.Substring(index, eventIndex - index);
+
+            if (!eventName.Contains("null"))
+            {
+                int sequence;
+                bool parsed = int.TryParse(eventName, out sequence);
+
+                if (parsed)
+                {
+                    socket.Cache.ReadyResponse.SequenceNumber = sequence;
+                }
+            }
+
         }
     }
 }
