@@ -32,9 +32,9 @@ namespace DiscordFlat.WebSockets
         private DiscordEventListener listener;
         private Uri uri;
         private CancellationToken cancelToken;
+        private CancellationTokenSource heartbeatCancelToken;
         private JsonSerializer serializer;
         private bool listening = false;
-        private bool heartBeating = false;
 
         public DiscordWebSocket() : this (new Uri("wss://gateway.discord.gg?v=6&encoding=json"), new CancellationToken())
         {
@@ -87,11 +87,11 @@ namespace DiscordFlat.WebSockets
         /// <summary>
         /// Heartbeat loop for the WebSocket connection.
         /// </summary>
-        protected async void Heartbeat(HelloObject gatewayObject, CancellationTokenSource heartbeatCancelToken)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Await.Warning", "CS4014:Await.Warning")]
+        protected void Heartbeat(HelloObject gatewayObject, CancellationTokenSource heartbeatCancelToken)
         {
-            heartBeating = true;
 
-            while (Client.State == WebSocketState.Open && heartBeating)
+            while (Client.State == WebSocketState.Open && !heartbeatCancelToken.IsCancellationRequested)
             {
                 // Wait to send the heartbeat based on the heartbeat interval:
                 heartbeatCancelToken.Token.WaitHandle.WaitOne(gatewayObject.EventData.HeartbeatInterval);
@@ -114,7 +114,7 @@ namespace DiscordFlat.WebSockets
 
                     try
                     {
-                        await SendAsync(message);
+                        SendAsync(message);
                     }
                     catch (Exception) { }
                 }
@@ -274,28 +274,33 @@ namespace DiscordFlat.WebSockets
             // Spin up thread for heartbeat:
             if (response.OpCode == (int)OpCodes.Hello)
             {
-                // If currently heartbeating, finish up the current heartbeat, and create a new one:
+                if (heartbeatCancelToken == null)
+                {
+                    heartbeatCancelToken = new CancellationTokenSource();
+                }
+
+                // If currently heartbeating, finish the current heartbeat and create a new one:
                 if (HeartBeat != null)
                 {
-                    heartBeating = false;
+                    heartbeatCancelToken.Cancel();
                     HeartBeat.Wait();
+
+                    heartbeatCancelToken.Dispose();
+                    heartbeatCancelToken = new CancellationTokenSource();
+
                     HeartBeat.Dispose();
                 }
-                HeartBeat = new Task(() => Heartbeat(response, new CancellationTokenSource()));
+
+                HeartBeat = new Task(() => Heartbeat(response, heartbeatCancelToken));
                 HeartBeat.Start();
 
-                /*if (!heartBeating)
-                {
-                    Task t = new Task(() => Heartbeat(response, new CancellationTokenSource()));
-                    t.Start();
-                }*/
                 return true;
             }
             else
             {
                 await Client.CloseAsync(WebSocketCloseStatus.Empty, "Did not receive a proper 'Hello' response from Discord's server.", CancellationToken.None);
             }
-
+             
             return false;
         }
     }
