@@ -14,12 +14,29 @@ namespace DiscordFlat.Managers
     public class ChannelManager : IDiscordChannelManager
     {
         private JsonDeserializer deserializer;
+        private TokenResponse token;
 
         public ChannelManager()
         {
             this.deserializer = new JsonDeserializer();
         }
 
+        public ChannelManager(TokenResponse token) : this()
+        {
+            this.token = token;
+        }
+
+        /// <summary>
+        /// Get all messages from a channel.
+        /// </summary>
+        public Messages GetMessages(string channelId)
+        {
+            return GetMessages(token, channelId);
+        }
+
+        /// <summary>
+        /// Get all messages from a channel.
+        /// </summary>
         public Messages GetMessages(TokenResponse tokenResponse, string channelId)
         {
             Messages messages = new Messages();
@@ -41,6 +58,17 @@ namespace DiscordFlat.Managers
             return messages;
         }
 
+        /// <summary>
+        /// Get a specific message from a channel.
+        /// </summary>
+        public Message GetMessage(string channelId, string messageId)
+        {
+            return GetMessage(token, channelId, messageId);
+        }
+
+        /// <summary>
+        /// Get a specific message from a channel.
+        /// </summary>
         public Message GetMessage(TokenResponse tokenResponse, string channelId, string messageId)
         {
             Message message = new Message();
@@ -86,6 +114,17 @@ namespace DiscordFlat.Managers
             return false;
         }
 
+        /// <summary>
+        /// Post a message in a channel.
+        /// </summary>
+        public bool CreateMessage(string channelId, string message)
+        {
+            return CreateMessage(token, channelId, message);
+        }
+
+        /// <summary>
+        /// Post a message in a channel.
+        /// </summary>
         public bool CreateMessage(TokenResponse tokenResponse, string channelId, string message)
         {
             using (WebClient client = new WebClient())
@@ -108,6 +147,17 @@ namespace DiscordFlat.Managers
             return false;
         }
 
+        /// <summary>
+        /// Delete a message from a channel.
+        /// </summary>
+        public bool DeleteMessage(string channelId, string messageId)
+        {
+            return DeleteMessage(token, channelId, messageId);
+        }
+
+        /// <summary>
+        /// Delete a message from a channel.
+        /// </summary>
         public bool DeleteMessage(TokenResponse tokenResponse, string channelId, string messageId)
         {
             using (WebClient client = new WebClient())

@@ -15,10 +15,9 @@ namespace DiscordFlat.Bots.Commands
         private IDiscordChannelManager channelManager;
         private TokenResponse token;
 
-        public BotCommands(TokenResponse token) : this (token, new ChannelManager())
+        public BotCommands(TokenResponse token) : this (token, new ChannelManager(token))
         {
             commands = new Dictionary<string, string>();
-            channelManager = new ChannelManager();
 
             this.token = token;
         }
