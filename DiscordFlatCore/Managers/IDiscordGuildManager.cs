@@ -18,9 +18,5 @@ namespace DiscordFlatCore.Managers
 
         GuildRole GetRole(string roleName);
         GuildRole GetRole(GuildRoles roles, string roleName);
-
-
-
-
     }
 }

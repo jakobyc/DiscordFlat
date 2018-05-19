@@ -14,10 +14,21 @@ namespace DiscordFlat.Managers
     public class UserManager : IDiscordUserManager
     {
         private JsonDeserializer deserializer;
+        private TokenResponse token;
 
         public UserManager()
         {
             this.deserializer = new JsonDeserializer();
+        }
+
+        public UserManager(TokenResponse token) : this()
+        {
+            this.token = token;
+        }
+
+        public DiscordUser GetCurrentUser()
+        {
+            return GetCurrentUser(token);
         }
 
         public DiscordUser GetCurrentUser(TokenResponse tokenResponse)

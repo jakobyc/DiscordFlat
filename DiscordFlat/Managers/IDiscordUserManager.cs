@@ -5,6 +5,7 @@ namespace DiscordFlat.Managers
 {
     public interface IDiscordUserManager
     {
+        DiscordUser GetCurrentUser();
         DiscordUser GetCurrentUser(TokenResponse tokenResponse);
     }
 }

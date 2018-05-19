@@ -15,10 +15,21 @@ namespace DiscordFlat.Managers
     public class GuildManager : IDiscordGuildManager
     {
         private JsonSerializer serializer;
+        private TokenResponse token;
 
         public GuildManager()
         {
             this.serializer = new JsonSerializer();
+        }
+
+        public GuildManager(TokenResponse token) : this()
+        {
+            this.token = token;
+        }
+
+        public bool AddUserToRole(string guildId, string userId, string roleId)
+        {
+            return AddUserToRole(token, guildId, userId, roleId);
         }
 
         public bool AddUserToRole(TokenResponse tokenResponse, string guildId, string userId, string roleId)
@@ -33,7 +44,7 @@ namespace DiscordFlat.Managers
                                            .Build();
 
                     string response = client.UploadString(uri, "PUT", "");
-                    
+
                     if (response == "")
                     {
                         return true;
@@ -43,6 +54,11 @@ namespace DiscordFlat.Managers
 
                 return false;
             }
+        }
+
+        public GuildMembers GetMembers(string guildId, int limit)
+        {
+            return GetMembers(token, guildId, limit);
         }
 
         /// <summary>
@@ -74,6 +90,11 @@ namespace DiscordFlat.Managers
             return members;
         }
 
+        public GuildRoles GetRoles(string guildId)
+        {
+            return GetRoles(token, guildId);
+        }
+
         public GuildRoles GetRoles(TokenResponse tokenResponse, string guildId)
         {
             GuildRoles roles = new GuildRoles();
@@ -90,9 +111,14 @@ namespace DiscordFlat.Managers
 
                     roles = serializer.Deserialize<GuildRoles>(response);
                 }
-                catch(Exception) { }
+                catch (Exception) { }
             }
             return roles;
+        }
+
+        public GuildRole GetRole(string roleName)
+        {
+            return GetRole(roleName);
         }
 
         public GuildRole GetRole(GuildRoles roles, string roleName)
@@ -132,6 +158,11 @@ namespace DiscordFlat.Managers
 
                 return false;
             }*/
+        }
+
+        public bool RemoveRoleFromUser(string guildId, string userId, string roleId)
+        {
+            return RemoveRoleFromUser(token, guildId, userId, roleId);
         }
 
         public bool RemoveRoleFromUser(TokenResponse tokenResponse, string guildId, string userId, string roleId)
