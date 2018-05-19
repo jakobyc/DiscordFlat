@@ -1,5 +1,7 @@
 # DiscordFlat
-.NET wrapper for Discord's API (https://discordapp.com/developers/docs/intro)
+.NET wrapper for Discord's API (https://discordapp.com/developers/docs/intro).
+
+Targeted Frameworks: .NET Core 2.0 and .NET 4.6.1
 
 ## How to use:
 ### WebSocket Client:
