@@ -8,15 +8,16 @@ using System.Threading.Tasks;
 
 namespace DiscordFlatCore.Serialization
 {
+    // Use JsonSerializer instead
     public class JsonDeserializer
     {
-        public TType Deserialize<TType>(string json)
+        public T Deserialize<T>(string json)
         {
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(TType));
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
 
             using (MemoryStream stream = new MemoryStream(Encoding.Default.GetBytes(json)))
             {
-                return (TType)serializer.ReadObject(stream);
+                return (T)serializer.ReadObject(stream);
             }
         }
     }

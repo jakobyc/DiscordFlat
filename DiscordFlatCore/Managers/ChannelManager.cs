@@ -11,83 +11,15 @@ using System.Threading.Tasks;
 
 namespace DiscordFlatCore.Managers
 {
-    public class ChannelManager : IDiscordChannelManager
+    public class ChannelManager : DiscordManager, IDiscordChannelManager
     {
-        private JsonDeserializer deserializer;
         private TokenResponse token;
 
-        public ChannelManager()
-        {
-            this.deserializer = new JsonDeserializer();
-        }
+        public ChannelManager() { }
 
-        public ChannelManager(TokenResponse token) : this()
+        public ChannelManager(TokenResponse token)
         {
             this.token = token;
-        }
-
-        /// <summary>
-        /// Get all messages from a channel.
-        /// </summary>
-        public Messages GetMessages(string channelId)
-        {
-            return GetMessages(token, channelId);
-        }
-
-        /// <summary>
-        /// Get all messages from a channel.
-        /// </summary>
-        public Messages GetMessages(TokenResponse tokenResponse, string channelId)
-        {
-            Messages messages = new Messages();
-
-            using (WebClient client = new WebClient())
-            {
-                client.Headers.Add(HttpRequestHeader.Authorization, tokenResponse.Type + " " + tokenResponse.AccessToken);
-                try
-                {
-                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
-                    string uri = uriBuilder.AddPath(messages.PathUrl.Replace("{channel}", channelId))
-                                           .Build();
-                    string response = client.DownloadString(uri);
-
-                    messages = deserializer.Deserialize<Messages>(response);
-                }
-                catch (Exception) { }
-            }
-            return messages;
-        }
-
-        /// <summary>
-        /// Get a specific message from a channel.
-        /// </summary>
-        public Message GetMessage(string channelId, string messageId)
-        {
-            return GetMessage(token, channelId, messageId);
-        }
-
-        /// <summary>
-        /// Get a specific message from a channel.
-        /// </summary>
-        public Message GetMessage(TokenResponse tokenResponse, string channelId, string messageId)
-        {
-            Message message = new Message();
-
-            using (WebClient client = new WebClient())
-            {
-                client.Headers.Add(HttpRequestHeader.Authorization, tokenResponse.Type + " " + tokenResponse.AccessToken);
-                try
-                {
-                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
-                    string uri = uriBuilder.AddPath(message.PathUrl.Replace("{channel}", channelId).Replace("{message}", messageId))
-                                           .Build();
-                    string response = client.DownloadString(uri);
-
-                    message = deserializer.Deserialize<Message>(response);
-                }
-                catch (Exception) { }
-            }
-            return message;
         }
 
         /// <summary>
@@ -101,10 +33,10 @@ namespace DiscordFlatCore.Managers
                 try
                 {
                     IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
-                    string uri = uriBuilder.AddPath(string.Format("webhooks/{0}/{1}", webhookId, webhookToken))
+                    string uri = uriBuilder.AddPath($"webhooks/{webhookId}/{webhookToken}")
                                            .Build();
 
-                    string json = string.Format("{{ \"content\":\"{0}\" }}", message);
+                    string json = $"{{ \"content\":\"{message}\" }}";
                     string response = client.UploadString(uri, "POST", json);
 
                     return true;
@@ -127,17 +59,15 @@ namespace DiscordFlatCore.Managers
         /// </summary>
         public bool CreateMessage(TokenResponse tokenResponse, string channelId, string message)
         {
-            using (WebClient client = new WebClient())
+            using (WebClient client = GetWebClient(tokenResponse, ContentType.Json))
             {
-                client.Headers.Add(HttpRequestHeader.Authorization, tokenResponse.Type + " " + tokenResponse.AccessToken);
-                client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 try
                 {
                     IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
-                    string uri = uriBuilder.AddPath(string.Format("channels/{0}/messages", channelId))
+                    string uri = uriBuilder.AddPath($"channels/{channelId}/messages")
                                            .Build();
 
-                    string json = string.Format("{{ \"content\":\"{0}\" }}", message);
+                    string json = $"{{ \"content\":\"{message}\" }}";
                     string response = client.UploadString(uri, "POST", json);
 
                     return true;
@@ -160,13 +90,12 @@ namespace DiscordFlatCore.Managers
         /// </summary>
         public bool DeleteMessage(TokenResponse tokenResponse, string channelId, string messageId)
         {
-            using (WebClient client = new WebClient())
+            using (WebClient client = GetWebClient(tokenResponse))
             {
-                client.Headers.Add(HttpRequestHeader.Authorization, tokenResponse.Type + " " + tokenResponse.AccessToken);
                 try
                 {
                     IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
-                    string uri = uriBuilder.AddPath(string.Format("channels/{0}/messages/{1}", channelId, messageId))
+                    string uri = uriBuilder.AddPath($"channels/{channelId}/messages/{messageId}")
                                            .Build();
 
                     //string json = string.Format("{{ \"content\":\"{0}\" }}", message);
@@ -178,5 +107,126 @@ namespace DiscordFlatCore.Managers
             }
             return false;
         }
+
+        public Channel GetChannel(string channelId)
+        {
+            return GetChannel(token, channelId);
+        }
+
+        public Channel GetChannel(TokenResponse tokenResponse, string channelId)
+        {
+            Channel channel = new Channel();
+
+            using (WebClient client = GetWebClient(tokenResponse))
+            {
+                try
+                {
+                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
+                    string uri = uriBuilder.AddPath(channel.PathUrl.Replace("{channel}", channelId))
+                                           .Build();
+                    string response = client.DownloadString(uri);
+
+                    channel = Serializer.Deserialize<Channel>(response);
+                }
+                catch (Exception) { }
+            }
+
+            return channel;
+        }
+
+        /// <summary>
+        /// Get all messages from a channel.
+        /// </summary>
+        public Messages GetMessages(string channelId)
+        {
+            return GetMessages(token, channelId);
+        }
+
+        /// <summary>
+        /// Get all messages from a channel.
+        /// </summary>
+        public Messages GetMessages(TokenResponse tokenResponse, string channelId)
+        {
+            Messages messages = new Messages();
+
+            using (WebClient client = GetWebClient(tokenResponse))
+            {
+                try
+                {
+                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
+                    string uri = uriBuilder.AddPath(messages.PathUrl.Replace("{channel}", channelId))
+                                           .Build();
+                    string response = client.DownloadString(uri);
+
+                    messages = Serializer.Deserialize<Messages>(response);
+                }
+                catch (Exception) { }
+            }
+            return messages;
+        }
+
+        /// <summary>
+        /// Get a specific message from a channel.
+        /// </summary>
+        public Message GetMessage(string channelId, string messageId)
+        {
+            return GetMessage(token, channelId, messageId);
+        }
+
+        /// <summary>
+        /// Get a specific message from a channel.
+        /// </summary>
+        public Message GetMessage(TokenResponse tokenResponse, string channelId, string messageId)
+        {
+            Message message = new Message();
+
+            using (WebClient client = GetWebClient(tokenResponse))
+            {
+                try
+                {
+                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
+                    string uri = uriBuilder.AddPath(message.PathUrl.Replace("{channel}", channelId).Replace("{message}", messageId))
+                                           .Build();
+                    string response = client.DownloadString(uri);
+
+                    message = Serializer.Deserialize<Message>(response);
+                }
+                catch (Exception) { }
+            }
+            return message;
+        }
+
+        /*public Channel ModifyChannel(string channelId, ChannelConfig config)
+        {
+            return ModifyChannel(token, channelId, config);
+        }*/
+
+        /*public Channel ModifyChannel(TokenResponse tokenResponse, string channelId, ChannelConfig config)
+        {
+            Channel channel = new Channel();
+
+            using (WebClient client = GetWebClient(tokenResponse))
+            {
+                try
+                {
+                    config.Name = "Test";
+                    if (config != null)
+                    {
+                        IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
+                        string uri = uriBuilder.AddPath(config.PathUrl.Replace("{channel}", channelId))
+                                               .Build();
+
+                        string json = Serializer.Serialize(config);
+                        json = $"{{{json}}}";
+                        string response = client.UploadString(uri, "PUT", json);
+
+                        channel = Serializer.Deserialize<Channel>(response);
+                    }
+                }
+                catch (Exception) { }
+            }
+
+            return channel;
+        }*/
     }
 }

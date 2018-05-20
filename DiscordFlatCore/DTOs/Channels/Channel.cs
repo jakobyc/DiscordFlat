@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace DiscordFlatCore.DTOs.Channels
 {
     [DataContract]
-    public class Channel
+    public class Channel : IRetrievable
     {
         [DataMember(Name = "id")]
         public string Id { get; set; }
@@ -50,5 +50,7 @@ namespace DiscordFlatCore.DTOs.Channels
         // TODO: Add overwrite and overwrites DTO's
         [DataMember(Name = "permission_overwrites")]
         public object PermissionOverwrites { get; set; }
+
+        public string PathUrl { get => "channels/{channel}"; }
     }
 }

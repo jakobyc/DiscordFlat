@@ -29,6 +29,15 @@ namespace DiscordFlatCore.Managers
         bool DeleteMessage(TokenResponse tokenResponse, string channelId, string messageId);
 
         /// <summary>
+        /// Get a channel.
+        /// </summary>
+        Channel GetChannel(string channelId);
+        /// <summary>
+        /// Get a channel.
+        /// </summary>
+        Channel GetChannel(TokenResponse tokenResponse, string channelId);
+
+        /// <summary>
         /// Get all messages from a channel.
         /// </summary>
         Messages GetMessages(string channelId);
@@ -45,5 +54,14 @@ namespace DiscordFlatCore.Managers
         /// Get a specific message from a channel.
         /// </summary>
         Message GetMessage(TokenResponse tokenResponse, string channelId, string messageId);
+
+        /// <summary>
+        /// Modify a channel's configurations.
+        /// </summary>
+        //Channel ModifyChannel(string channelId, ChannelConfig config);
+        /// <summary>
+        /// Modify a channel's configurations.
+        /// </summary>
+        //Channel ModifyChannel(TokenResponse tokenResponse, string channelId, ChannelConfig config);
     }
 }

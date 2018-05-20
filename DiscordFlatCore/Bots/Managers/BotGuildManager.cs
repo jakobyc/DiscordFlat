@@ -20,31 +20,6 @@ namespace DiscordFlatCore.Bots.Roles
             this.token = token;
         }
 
-        public bool AddUserToRole(string guildId, string userId, string roleId)
-        {
-            return base.AddUserToRole(token, guildId, userId, roleId);
-        }
-
-        public GuildMembers GetMembers(string guildId, int limit)
-        {
-            return base.GetMembers(token, guildId, limit);
-        }
-
-        public GuildRoles GetRoles(string guildId)
-        {
-            return base.GetRoles(token, guildId);
-        }
-
-        public bool ModifyUser(ModifyGuildMember modification, string guildId, string userId)
-        {
-            return base.ModifyUser(token, modification, guildId, userId);
-        }
-
-        public bool RemoveRoleFromUser(string guildId, string userId, string roleId)
-        {
-            return base.RemoveRoleFromUser(token, guildId, userId, roleId);
-        }
-
         #region Events
         // TODO: Is this friendly for use with public bots?
         /// <summary>
