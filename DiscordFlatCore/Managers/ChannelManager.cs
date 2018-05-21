@@ -196,37 +196,36 @@ namespace DiscordFlatCore.Managers
             return message;
         }
 
-        /*public Channel ModifyChannel(string channelId, ChannelConfig config)
+        public Channel ModifyChannel(string channelId, ChannelConfig config)
         {
             return ModifyChannel(token, channelId, config);
-        }*/
+        }
 
-        /*public Channel ModifyChannel(TokenResponse tokenResponse, string channelId, ChannelConfig config)
+        public Channel ModifyChannel(TokenResponse tokenResponse, string channelId, ChannelConfig config)
         {
             Channel channel = new Channel();
 
-            using (WebClient client = GetWebClient(tokenResponse))
+            using (WebClient client = GetWebClient(tokenResponse, ContentType.Json))
             {
-                try
+                if (config != null && config.IsValid())
                 {
-                    config.Name = "Test";
-                    if (config != null)
+                    try
                     {
+
                         IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
                         string uri = uriBuilder.AddPath(config.PathUrl.Replace("{channel}", channelId))
                                                .Build();
 
                         string json = Serializer.Serialize(config);
-                        json = $"{{{json}}}";
-                        string response = client.UploadString(uri, "PUT", json);
+                        string response = client.UploadString(uri, "PATCH", json);
 
                         channel = Serializer.Deserialize<Channel>(response);
                     }
+                    catch (Exception) { }
                 }
-                catch (Exception) { }
             }
 
             return channel;
-        }*/
+        }
     }
 }

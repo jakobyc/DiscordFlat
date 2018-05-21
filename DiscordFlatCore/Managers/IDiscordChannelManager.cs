@@ -58,10 +58,10 @@ namespace DiscordFlatCore.Managers
         /// <summary>
         /// Modify a channel's configurations.
         /// </summary>
-        //Channel ModifyChannel(string channelId, ChannelConfig config);
+        Channel ModifyChannel(string channelId, ChannelConfig config);
         /// <summary>
         /// Modify a channel's configurations.
         /// </summary>
-        //Channel ModifyChannel(TokenResponse tokenResponse, string channelId, ChannelConfig config);
+        Channel ModifyChannel(TokenResponse tokenResponse, string channelId, ChannelConfig config);
     }
 }
