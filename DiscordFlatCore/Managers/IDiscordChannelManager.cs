@@ -20,6 +20,24 @@ namespace DiscordFlatCore.Managers
         bool CreateMessage(TokenResponse tokenResponse, string channelId, string message);
 
         /// <summary>
+        /// Create a reaction to a message.
+        /// </summary>
+        bool CreateReaction(string channelId, string messageId, string emoji);
+        /// <summary>
+        /// Create a reaction to a message.
+        /// </summary>
+        bool CreateReaction(TokenResponse tokenResponse, string channelId, string messageId, string emoji);
+
+        /// <summary>
+        /// Delete a channel or close a private message.
+        /// </summary>
+        bool DeleteChannel(string channelId);
+        /// <summary>
+        /// Delete a channel or close a private message.
+        /// </summary>
+        bool DeleteChannel(TokenResponse tokenResponse, string channelId);
+
+        /// <summary>
         /// Delete a message from a channel.
         /// </summary>
         bool DeleteMessage(string channelId, string messageId);

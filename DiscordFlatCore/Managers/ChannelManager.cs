@@ -78,6 +78,69 @@ namespace DiscordFlatCore.Managers
         }
 
         /// <summary>
+        /// Create a reaction for a message.
+        /// </summary>
+        public bool CreateReaction(string channelId, string messageId, string emoji)
+        {
+            return CreateReaction(token, channelId, messageId, emoji);
+        }
+
+        /// <summary>
+        /// Create a reaction for a message.
+        /// </summary>
+        public bool CreateReaction(TokenResponse tokenResponse, string channelId, string messageId, string emoji)
+        {
+            using (WebClient client = GetWebClient(tokenResponse))
+            {
+                try
+                {
+                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
+                    string uri = uriBuilder.AddPath($"channels/{channelId}/messages/{messageId}/reactions/{emoji}/@me")
+                                           .Build();
+
+                    string response = client.UploadString(uri, "PUT", "");
+
+                    return true;
+                }
+                catch (Exception) { }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Delete a channel.
+        /// </summary>
+        public bool DeleteChannel(string channelId)
+        {
+            return DeleteChannel(token, channelId);
+        }
+
+        /// <summary>
+        /// Delete a channel.
+        /// </summary>
+        public bool DeleteChannel(TokenResponse tokenResponse, string channelId)
+        {
+            using (WebClient client = GetWebClient(tokenResponse))
+            {
+                try
+                {
+                    IDiscordUriBuilder uriBuilder = new DiscordUriBuilder();
+                    string uri = uriBuilder.AddPath($"channels/{channelId}")
+                                           .Build();
+
+                    string response = client.UploadString(uri, "DELETE", "");
+
+                    if (!string.IsNullOrEmpty(response))
+                    {
+                        return true;
+                    }
+                }
+                catch (Exception) { }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Delete a message from a channel.
         /// </summary>
         public bool DeleteMessage(string channelId, string messageId)
@@ -98,7 +161,6 @@ namespace DiscordFlatCore.Managers
                     string uri = uriBuilder.AddPath($"channels/{channelId}/messages/{messageId}")
                                            .Build();
 
-                    //string json = string.Format("{{ \"content\":\"{0}\" }}", message);
                     string response = client.UploadString(uri, "DELETE", "");
 
                     return true;
@@ -196,11 +258,19 @@ namespace DiscordFlatCore.Managers
             return message;
         }
 
+        /// <summary>
+        /// Modify a guild channel.
+        /// </summary>
+        /// <param name="config">Configuration file containing optional values to change.</param>
         public Channel ModifyChannel(string channelId, ChannelConfig config)
         {
             return ModifyChannel(token, channelId, config);
         }
 
+        /// <summary>
+        /// Modify a guild channel.
+        /// </summary>
+        /// <param name="config">Configuration file containing optional values to change.</param>
         public Channel ModifyChannel(TokenResponse tokenResponse, string channelId, ChannelConfig config)
         {
             Channel channel = new Channel();
