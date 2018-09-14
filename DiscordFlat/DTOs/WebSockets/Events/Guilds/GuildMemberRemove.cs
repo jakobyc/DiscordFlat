@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.DTOs.WebSockets.Events.Guilds
+namespace DiscordFlat.DTOs.WebSockets.Events.Guilds
 {
     [DataContract]
     public class GuildMemberRemove : GatewayObject

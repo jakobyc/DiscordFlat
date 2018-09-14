@@ -1,15 +1,15 @@
-﻿using DiscordFlatCore.DTOs.Authorization;
-using DiscordFlatCore.DTOs.WebSockets;
-using DiscordFlatCore.DTOs.WebSockets.Events.Connections;
-using DiscordFlatCore.DTOs.WebSockets.Events.Guilds;
-using DiscordFlatCore.DTOs.WebSockets.Events.Messages;
-using DiscordFlatCore.DTOs.WebSockets.Heartbeats;
-using DiscordFlatCore.Managers;
-using DiscordFlatCore.Serialization;
-using DiscordFlatCore.Services;
-using DiscordFlatCore.WebSockets.Caches;
-using DiscordFlatCore.WebSockets.EventHandlers;
-using DiscordFlatCore.WebSockets.Listeners;
+﻿using DiscordFlat.DTOs.Authorization;
+using DiscordFlat.DTOs.WebSockets;
+using DiscordFlat.DTOs.WebSockets.Events.Connections;
+using DiscordFlat.DTOs.WebSockets.Events.Guilds;
+using DiscordFlat.DTOs.WebSockets.Events.Messages;
+using DiscordFlat.DTOs.WebSockets.Heartbeats;
+using DiscordFlat.Managers;
+using DiscordFlat.Serialization;
+using DiscordFlat.Services;
+using DiscordFlat.WebSockets.Caches;
+using DiscordFlat.WebSockets.EventHandlers;
+using DiscordFlat.WebSockets.Listeners;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,7 +19,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.WebSockets
+namespace DiscordFlat.WebSockets
 {
     public class DiscordWebSocket
     {

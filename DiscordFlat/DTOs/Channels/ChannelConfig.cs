@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace DiscordFlatCore.DTOs.Channels
+namespace DiscordFlat.DTOs.Channels
 {
     [DataContract]
     public class ChannelConfig : IRetrievable

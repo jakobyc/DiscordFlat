@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.DTOs.Authorization
+namespace DiscordFlat.DTOs.Authorization
 {
     public static class TokenType
     {

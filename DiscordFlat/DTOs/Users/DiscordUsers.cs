@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.DTOs.Users
+namespace DiscordFlat.DTOs.Users
 {
     public class DiscordUsers : List<DiscordUser>, ICollection<DiscordUser>
     {

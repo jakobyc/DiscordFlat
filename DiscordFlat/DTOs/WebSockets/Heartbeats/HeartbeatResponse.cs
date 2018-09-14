@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.DTOs.WebSockets.Heartbeats
+namespace DiscordFlat.DTOs.WebSockets.Heartbeats
 {
     /// <summary>
     /// Heartbeat Acknowledgement

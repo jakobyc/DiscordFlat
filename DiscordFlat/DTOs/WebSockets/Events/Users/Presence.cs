@@ -1,4 +1,4 @@
-﻿using DiscordFlatCore.DTOs.Users;
+﻿using DiscordFlat.DTOs.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.DTOs.WebSockets.Events.Users
+namespace DiscordFlat.DTOs.WebSockets.Events.Users
 {
     [DataContract]
     public class Presence

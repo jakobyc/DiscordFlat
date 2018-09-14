@@ -1,11 +1,11 @@
-﻿using DiscordFlatCore.DTOs;
+﻿using DiscordFlat.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.Services.Uri
+namespace DiscordFlat.Services.Uri
 {
     public class DiscordUriBuilder : IDiscordUriBuilder
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.DTOs
+namespace DiscordFlat.DTOs
 {
     public interface IRetrievable
     {

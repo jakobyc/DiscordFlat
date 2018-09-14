@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.DTOs.WebSockets
+namespace DiscordFlat.DTOs.WebSockets
 {
     [DataContract]
     public class GatewayResumeObject : GatewayObject

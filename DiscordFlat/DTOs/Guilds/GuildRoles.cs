@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.DTOs.Guilds
+namespace DiscordFlat.DTOs.Guilds
 {
     public class GuildRoles : List<GuildRole>, ICollection<GuildRole>, IRetrievable
     {

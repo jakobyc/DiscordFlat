@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.DTOs.Channels
+namespace DiscordFlat.DTOs.Channels
 {
     public class Attachments : List<Attachment>, ICollection<Attachment>
     {

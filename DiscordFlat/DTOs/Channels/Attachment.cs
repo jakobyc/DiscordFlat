@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.DTOs.Channels
+namespace DiscordFlat.DTOs.Channels
 {
     [DataContract]
     public class Attachment

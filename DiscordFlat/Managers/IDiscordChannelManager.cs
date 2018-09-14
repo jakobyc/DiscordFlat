@@ -1,7 +1,7 @@
-﻿using DiscordFlatCore.DTOs.Authorization;
-using DiscordFlatCore.DTOs.Channels;
+﻿using DiscordFlat.DTOs.Authorization;
+using DiscordFlat.DTOs.Channels;
 
-namespace DiscordFlatCore.Managers
+namespace DiscordFlat.Managers
 {
     public interface IDiscordChannelManager
     {

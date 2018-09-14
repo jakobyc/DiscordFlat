@@ -1,6 +1,6 @@
-﻿using DiscordFlatCore.DTOs.Channels;
-using DiscordFlatCore.DTOs.Guilds;
-using DiscordFlatCore.DTOs.Users;
+﻿using DiscordFlat.DTOs.Channels;
+using DiscordFlat.DTOs.Guilds;
+using DiscordFlat.DTOs.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.DTOs.WebSockets.Events.Connections
+namespace DiscordFlat.DTOs.WebSockets.Events.Connections
 {
     [DataContract]
     public class Ready

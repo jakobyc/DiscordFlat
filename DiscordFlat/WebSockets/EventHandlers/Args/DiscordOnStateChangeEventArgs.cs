@@ -5,7 +5,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.WebSockets.EventHandlers.Args
+namespace DiscordFlat.WebSockets.EventHandlers.Args
 {
     public class DiscordOnStateChangeEventArgs
     {

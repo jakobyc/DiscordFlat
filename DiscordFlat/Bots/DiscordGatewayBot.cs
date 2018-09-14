@@ -1,14 +1,14 @@
-﻿using DiscordFlatCore.Bots.Commands;
-using DiscordFlatCore.Bots.Roles;
-using DiscordFlatCore.DTOs.Authorization;
-using DiscordFlatCore.WebSockets;
+﻿using DiscordFlat.Bots.Commands;
+using DiscordFlat.Bots.Roles;
+using DiscordFlat.DTOs.Authorization;
+using DiscordFlat.WebSockets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.Bots
+namespace DiscordFlat.Bots
 {
     public class DiscordGatewayBot : IDiscordGatewayBot
     {

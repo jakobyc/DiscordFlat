@@ -1,11 +1,11 @@
-﻿using DiscordFlatCore.DTOs.Channels;
-using DiscordFlatCore.DTOs.WebSockets.Events.Connections;
-using DiscordFlatCore.DTOs.WebSockets.Events.Guilds;
-using DiscordFlatCore.DTOs.WebSockets.Events.Messages;
-using DiscordFlatCore.DTOs.WebSockets.Events.Users;
-using DiscordFlatCore.DTOs.WebSockets.Heartbeats;
-using DiscordFlatCore.Serialization;
-using DiscordFlatCore.WebSockets.EventHandlers.Args;
+﻿using DiscordFlat.DTOs.Channels;
+using DiscordFlat.DTOs.WebSockets.Events.Connections;
+using DiscordFlat.DTOs.WebSockets.Events.Guilds;
+using DiscordFlat.DTOs.WebSockets.Events.Messages;
+using DiscordFlat.DTOs.WebSockets.Events.Users;
+using DiscordFlat.DTOs.WebSockets.Heartbeats;
+using DiscordFlat.Serialization;
+using DiscordFlat.WebSockets.EventHandlers.Args;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.WebSockets.EventHandlers
+namespace DiscordFlat.WebSockets.EventHandlers
 {
     public class DiscordEventHandler
     {

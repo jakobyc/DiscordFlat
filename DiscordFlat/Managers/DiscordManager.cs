@@ -1,11 +1,11 @@
-﻿using DiscordFlatCore.DTOs.Authorization;
-using DiscordFlatCore.Serialization;
+﻿using DiscordFlat.DTOs.Authorization;
+using DiscordFlat.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace DiscordFlatCore.Managers
+namespace DiscordFlat.Managers
 {
     public static class ContentType
     {

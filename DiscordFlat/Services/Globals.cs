@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.Services
+namespace DiscordFlat.Services
 {
     public static class Globals
     {

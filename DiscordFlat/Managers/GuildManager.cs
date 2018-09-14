@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
-using DiscordFlatCore.DTOs.Authorization;
-using DiscordFlatCore.Services.Uri;
-using DiscordFlatCore.DTOs.Guilds;
-using DiscordFlatCore.Serialization;
-using DiscordFlatCore.DTOs.Users;
+using DiscordFlat.DTOs.Authorization;
+using DiscordFlat.Services.Uri;
+using DiscordFlat.DTOs.Guilds;
+using DiscordFlat.Serialization;
+using DiscordFlat.DTOs.Users;
 
-namespace DiscordFlatCore.Managers
+namespace DiscordFlat.Managers
 {
     public class GuildManager : IDiscordGuildManager
     {

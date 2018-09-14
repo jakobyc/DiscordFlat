@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
-namespace DiscordFlatCore.DTOs.WebSockets.Events.Users
+namespace DiscordFlat.DTOs.WebSockets.Events.Users
 {
     [DataContract]
     public class PresenceUpdate : GatewayObject

@@ -1,15 +1,15 @@
-﻿using DiscordFlatCore.DTOs.Authorization;
-using DiscordFlatCore.DTOs.Guilds;
-using DiscordFlatCore.DTOs.Users;
-using DiscordFlatCore.Managers;
-using DiscordFlatCore.WebSockets.EventHandlers.Args;
+﻿using DiscordFlat.DTOs.Authorization;
+using DiscordFlat.DTOs.Guilds;
+using DiscordFlat.DTOs.Users;
+using DiscordFlat.Managers;
+using DiscordFlat.WebSockets.EventHandlers.Args;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.Bots.Roles
+namespace DiscordFlat.Bots.Roles
 {
     public class BotGuildManager : GuildManager
     {

@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlatCore.DTOs.Guilds
+namespace DiscordFlat.DTOs.Guilds
 {
     [DataContract]
     public class UnavailableGuild
