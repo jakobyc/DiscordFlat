@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
-using DiscordFlat.DTOs.Users;
+using DiscordFlatCore.DTOs.Users;
 
-namespace DiscordFlat.DTOs.Channels
+namespace DiscordFlatCore.DTOs.Channels
 {
     [DataContract]
     public class Message : IRetrievable

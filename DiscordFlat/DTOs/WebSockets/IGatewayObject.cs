@@ -1,4 +1,4 @@
-﻿namespace DiscordFlat.DTOs.WebSockets
+﻿namespace DiscordFlatCore.DTOs.WebSockets
 {
     public interface IGatewayObject
     {

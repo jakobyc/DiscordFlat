@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.DTOs.WebSockets.Events.Messages
+namespace DiscordFlatCore.DTOs.WebSockets.Events.Messages
 {
     [DataContract]
     public class MessageDelete : GatewayObject

@@ -1,9 +1,9 @@
-﻿using DiscordFlat.DTOs.Authorization;
-using DiscordFlat.DTOs.WebSockets;
-using DiscordFlat.DTOs.WebSockets.Events.Connections;
-using DiscordFlat.Serialization;
-using DiscordFlat.Services.Uri;
-using DiscordFlat.WebSockets.EventHandlers.Args;
+﻿using DiscordFlatCore.DTOs.Authorization;
+using DiscordFlatCore.DTOs.WebSockets;
+using DiscordFlatCore.DTOs.WebSockets.Events.Connections;
+using DiscordFlatCore.Serialization;
+using DiscordFlatCore.Services.Uri;
+using DiscordFlatCore.WebSockets.EventHandlers.Args;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.WebSockets
+namespace DiscordFlatCore.WebSockets
 {
     public class DiscordWebSocketClient
     {

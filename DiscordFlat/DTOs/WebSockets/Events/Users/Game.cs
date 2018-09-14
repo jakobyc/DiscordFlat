@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.DTOs.WebSockets.Events.Users
+namespace DiscordFlatCore.DTOs.WebSockets.Events.Users
 {
     public enum ActivityTypes
     {

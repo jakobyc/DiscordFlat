@@ -1,7 +1,7 @@
-﻿using DiscordFlat.DTOs;
+﻿using DiscordFlatCore.DTOs;
 using System.Collections.Generic;
 
-namespace DiscordFlat.Services.Uri
+namespace DiscordFlatCore.Services.Uri
 {
     public interface IDiscordUriBuilder
     {

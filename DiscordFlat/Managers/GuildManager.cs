@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
-using DiscordFlat.DTOs.Authorization;
-using DiscordFlat.Services.Uri;
-using DiscordFlat.DTOs.Guilds;
-using DiscordFlat.Serialization;
-using DiscordFlat.DTOs.Users;
+using DiscordFlatCore.DTOs.Authorization;
+using DiscordFlatCore.Services.Uri;
+using DiscordFlatCore.DTOs.Guilds;
+using DiscordFlatCore.Serialization;
+using DiscordFlatCore.DTOs.Users;
 
-namespace DiscordFlat.Managers
+namespace DiscordFlatCore.Managers
 {
     public class GuildManager : IDiscordGuildManager
     {
@@ -44,7 +44,7 @@ namespace DiscordFlat.Managers
                                            .Build();
 
                     string response = client.UploadString(uri, "PUT", "");
-
+                    
                     if (response == "")
                     {
                         return true;
@@ -111,7 +111,7 @@ namespace DiscordFlat.Managers
 
                     roles = serializer.Deserialize<GuildRoles>(response);
                 }
-                catch (Exception) { }
+                catch(Exception) { }
             }
             return roles;
         }

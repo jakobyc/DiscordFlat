@@ -1,13 +1,13 @@
-﻿using DiscordFlat.DTOs.Authorization;
-using DiscordFlat.Managers;
-using DiscordFlat.WebSockets.EventHandlers.Args;
+﻿using DiscordFlatCore.DTOs.Authorization;
+using DiscordFlatCore.Managers;
+using DiscordFlatCore.WebSockets.EventHandlers.Args;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.Bots.Commands
+namespace DiscordFlatCore.Bots.Commands
 {
     public class BotCommands
     {

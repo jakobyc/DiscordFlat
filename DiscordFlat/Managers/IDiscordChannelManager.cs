@@ -1,7 +1,7 @@
-﻿using DiscordFlat.DTOs.Authorization;
-using DiscordFlat.DTOs.Channels;
+﻿using DiscordFlatCore.DTOs.Authorization;
+using DiscordFlatCore.DTOs.Channels;
 
-namespace DiscordFlat.Managers
+namespace DiscordFlatCore.Managers
 {
     public interface IDiscordChannelManager
     {
@@ -20,6 +20,24 @@ namespace DiscordFlat.Managers
         bool CreateMessage(TokenResponse tokenResponse, string channelId, string message);
 
         /// <summary>
+        /// Create a reaction to a message.
+        /// </summary>
+        bool CreateReaction(string channelId, string messageId, string emoji);
+        /// <summary>
+        /// Create a reaction to a message.
+        /// </summary>
+        bool CreateReaction(TokenResponse tokenResponse, string channelId, string messageId, string emoji);
+
+        /// <summary>
+        /// Delete a channel or close a private message.
+        /// </summary>
+        bool DeleteChannel(string channelId);
+        /// <summary>
+        /// Delete a channel or close a private message.
+        /// </summary>
+        bool DeleteChannel(TokenResponse tokenResponse, string channelId);
+
+        /// <summary>
         /// Delete a message from a channel.
         /// </summary>
         bool DeleteMessage(string channelId, string messageId);
@@ -27,6 +45,15 @@ namespace DiscordFlat.Managers
         /// Delete a message from a channel.
         /// </summary>
         bool DeleteMessage(TokenResponse tokenResponse, string channelId, string messageId);
+
+        /// <summary>
+        /// Get a channel.
+        /// </summary>
+        Channel GetChannel(string channelId);
+        /// <summary>
+        /// Get a channel.
+        /// </summary>
+        Channel GetChannel(TokenResponse tokenResponse, string channelId);
 
         /// <summary>
         /// Get all messages from a channel.
@@ -45,5 +72,14 @@ namespace DiscordFlat.Managers
         /// Get a specific message from a channel.
         /// </summary>
         Message GetMessage(TokenResponse tokenResponse, string channelId, string messageId);
+
+        /// <summary>
+        /// Modify a channel's configurations.
+        /// </summary>
+        Channel ModifyChannel(string channelId, ChannelConfig config);
+        /// <summary>
+        /// Modify a channel's configurations.
+        /// </summary>
+        Channel ModifyChannel(TokenResponse tokenResponse, string channelId, ChannelConfig config);
     }
 }

@@ -1,7 +1,7 @@
-﻿using DiscordFlat.DTOs.WebSockets;
-using DiscordFlat.DTOs.WebSockets.Events.Connections;
-using DiscordFlat.Serialization;
-using DiscordFlat.Services;
+﻿using DiscordFlatCore.DTOs.WebSockets;
+using DiscordFlatCore.DTOs.WebSockets.Events.Connections;
+using DiscordFlatCore.Serialization;
+using DiscordFlatCore.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.WebSockets.Listeners
+namespace DiscordFlatCore.WebSockets.Listeners
 {
     /// <summary>
     /// Listen for events from a Discord WebSocket server.

@@ -1,4 +1,4 @@
-﻿using DiscordFlat.DTOs.Users;
+﻿using DiscordFlatCore.DTOs.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.DTOs.Emojis
+namespace DiscordFlatCore.DTOs.Emojis
 {
     [DataContract]
     public class Emoji

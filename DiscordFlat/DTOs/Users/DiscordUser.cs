@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
 
-namespace DiscordFlat.DTOs.Users
+namespace DiscordFlatCore.DTOs.Users
 {
     [DataContract]
     public class DiscordUser : IRetrievable

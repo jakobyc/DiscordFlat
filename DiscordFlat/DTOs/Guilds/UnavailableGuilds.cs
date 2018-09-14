@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.DTOs.Guilds
+namespace DiscordFlatCore.DTOs.Guilds
 {
     public class UnavailableGuilds : List<UnavailableGuild>, ICollection<UnavailableGuild>
     {

@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using DiscordFlat.Bots.Roles;
-using DiscordFlat.WebSockets;
+using DiscordFlatCore.Bots.Roles;
+using DiscordFlatCore.WebSockets;
 
-namespace DiscordFlat.Bots
+namespace DiscordFlatCore.Bots
 {
     public interface IDiscordGatewayBot
     {

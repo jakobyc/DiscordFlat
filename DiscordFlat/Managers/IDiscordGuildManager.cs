@@ -1,7 +1,7 @@
-﻿using DiscordFlat.DTOs.Authorization;
-using DiscordFlat.DTOs.Guilds;
+﻿using DiscordFlatCore.DTOs.Authorization;
+using DiscordFlatCore.DTOs.Guilds;
 
-namespace DiscordFlat.Managers
+namespace DiscordFlatCore.Managers
 {
     public interface IDiscordGuildManager
     {

@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.Serialization
+namespace DiscordFlatCore.Serialization
 {
     public class JsonSerializer
     {

@@ -1,12 +1,12 @@
-﻿using DiscordFlat.DTOs.Authorization;
-using DiscordFlat.DTOs.WebSockets.Events.Connections;
+﻿using DiscordFlatCore.DTOs.Authorization;
+using DiscordFlatCore.DTOs.WebSockets.Events.Connections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.WebSockets.Caches
+namespace DiscordFlatCore.WebSockets.Caches
 {
     public class DiscordWebSocketCache
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
 
-namespace DiscordFlat.DTOs.Authorization
+namespace DiscordFlatCore.DTOs.Authorization
 {
     [DataContract]
     public class TokenRequest

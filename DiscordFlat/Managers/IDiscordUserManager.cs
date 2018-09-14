@@ -1,7 +1,7 @@
-﻿using DiscordFlat.DTOs.Authorization;
-using DiscordFlat.DTOs.Users;
+﻿using DiscordFlatCore.DTOs.Authorization;
+using DiscordFlatCore.DTOs.Users;
 
-namespace DiscordFlat.Managers
+namespace DiscordFlatCore.Managers
 {
     public interface IDiscordUserManager
     {

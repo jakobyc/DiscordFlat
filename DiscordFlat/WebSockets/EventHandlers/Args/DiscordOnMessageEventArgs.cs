@@ -1,11 +1,11 @@
-﻿using DiscordFlat.DTOs.Channels;
+﻿using DiscordFlatCore.DTOs.Channels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.WebSockets.EventHandlers.Args
+namespace DiscordFlatCore.WebSockets.EventHandlers.Args
 {
     public class DiscordOnMessageEventArgs : EventArgs
     {

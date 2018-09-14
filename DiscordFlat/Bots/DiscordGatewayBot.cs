@@ -1,14 +1,14 @@
-﻿using DiscordFlat.Bots.Commands;
-using DiscordFlat.Bots.Roles;
-using DiscordFlat.DTOs.Authorization;
-using DiscordFlat.WebSockets;
+﻿using DiscordFlatCore.Bots.Commands;
+using DiscordFlatCore.Bots.Roles;
+using DiscordFlatCore.DTOs.Authorization;
+using DiscordFlatCore.WebSockets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.Bots
+namespace DiscordFlatCore.Bots
 {
     public class DiscordGatewayBot : IDiscordGatewayBot
     {
@@ -24,6 +24,19 @@ namespace DiscordFlat.Bots
             {
                 AccessToken = token
             };
+
+            commands = new BotCommands(this.token);
+            Guilds = new BotGuildManager(this.token);
+        }
+
+        public DiscordGatewayBot(TokenResponse token)
+        {
+            this.token = token;
+            if (token.Type != TokenType.Bot)
+            {
+                token.Type = TokenType.Bot;
+            }
+
             commands = new BotCommands(this.token);
             Guilds = new BotGuildManager(this.token);
         }

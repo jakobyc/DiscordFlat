@@ -1,4 +1,4 @@
-﻿using DiscordFlat.DTOs.Emojis;
+﻿using DiscordFlatCore.DTOs.Emojis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.DTOs.Channels
+namespace DiscordFlatCore.DTOs.Channels
 {
     [DataContract]
     public class Reaction

@@ -1,7 +1,7 @@
-﻿using DiscordFlat.DTOs.Authorization;
-using DiscordFlat.DTOs.Users;
-using DiscordFlat.Serialization;
-using DiscordFlat.Services.Uri;
+﻿using DiscordFlatCore.DTOs.Authorization;
+using DiscordFlatCore.DTOs.Users;
+using DiscordFlatCore.Serialization;
+using DiscordFlatCore.Services.Uri;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.Managers
+namespace DiscordFlatCore.Managers
 {
     public class UserManager : IDiscordUserManager
     {

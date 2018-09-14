@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.DTOs.WebSockets.Heartbeats
+namespace DiscordFlatCore.DTOs.WebSockets.Heartbeats
 {
     [DataContract]
     public class Heartbeat

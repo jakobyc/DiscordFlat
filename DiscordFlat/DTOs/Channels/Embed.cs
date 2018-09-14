@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.DTOs.Channels
+namespace DiscordFlatCore.DTOs.Channels
 {
     [DataContract]
     public class Embed

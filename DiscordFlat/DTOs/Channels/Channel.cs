@@ -1,4 +1,4 @@
-﻿using DiscordFlat.DTOs.Users;
+﻿using DiscordFlatCore.DTOs.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,10 +6,10 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.DTOs.Channels
+namespace DiscordFlatCore.DTOs.Channels
 {
     [DataContract]
-    public class Channel
+    public class Channel : IRetrievable
     {
         [DataMember(Name = "id")]
         public string Id { get; set; }
@@ -50,5 +50,7 @@ namespace DiscordFlat.DTOs.Channels
         // TODO: Add overwrite and overwrites DTO's
         [DataMember(Name = "permission_overwrites")]
         public object PermissionOverwrites { get; set; }
+
+        public string PathUrl { get => "channels/{channel}"; }
     }
 }

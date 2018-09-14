@@ -6,17 +6,18 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.Serialization
+namespace DiscordFlatCore.Serialization
 {
+    // Use JsonSerializer instead
     public class JsonDeserializer
     {
-        public TType Deserialize<TType>(string json)
+        public T Deserialize<T>(string json)
         {
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(TType));
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
 
             using (MemoryStream stream = new MemoryStream(Encoding.Default.GetBytes(json)))
             {
-                return (TType)serializer.ReadObject(stream);
+                return (T)serializer.ReadObject(stream);
             }
         }
     }

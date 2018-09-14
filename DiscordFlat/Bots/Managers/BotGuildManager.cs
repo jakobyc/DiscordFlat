@@ -1,15 +1,15 @@
-﻿using DiscordFlat.DTOs.Authorization;
-using DiscordFlat.DTOs.Guilds;
-using DiscordFlat.DTOs.Users;
-using DiscordFlat.Managers;
-using DiscordFlat.WebSockets.EventHandlers.Args;
+﻿using DiscordFlatCore.DTOs.Authorization;
+using DiscordFlatCore.DTOs.Guilds;
+using DiscordFlatCore.DTOs.Users;
+using DiscordFlatCore.Managers;
+using DiscordFlatCore.WebSockets.EventHandlers.Args;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.Bots.Roles
+namespace DiscordFlatCore.Bots.Roles
 {
     public class BotGuildManager : GuildManager
     {
@@ -18,31 +18,6 @@ namespace DiscordFlat.Bots.Roles
         public BotGuildManager(TokenResponse token)
         {
             this.token = token;
-        }
-
-        public bool AddUserToRole(string guildId, string userId, string roleId)
-        {
-            return base.AddUserToRole(token, guildId, userId, roleId);
-        }
-
-        public GuildMembers GetMembers(string guildId, int limit)
-        {
-            return base.GetMembers(token, guildId, limit);
-        }
-
-        public GuildRoles GetRoles(string guildId)
-        {
-            return base.GetRoles(token, guildId);
-        }
-
-        public bool ModifyUser(ModifyGuildMember modification, string guildId, string userId)
-        {
-            return base.ModifyUser(token, modification, guildId, userId);
-        }
-
-        public bool RemoveRoleFromUser(string guildId, string userId, string roleId)
-        {
-            return base.RemoveRoleFromUser(token, guildId, userId, roleId);
         }
 
         #region Events

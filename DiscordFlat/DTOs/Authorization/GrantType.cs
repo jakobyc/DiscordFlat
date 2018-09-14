@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.DTOs.Authorization
+namespace DiscordFlatCore.DTOs.Authorization
 {
     public static class GrantType
     {

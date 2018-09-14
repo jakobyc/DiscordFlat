@@ -1,11 +1,11 @@
-﻿using DiscordFlat.DTOs.WebSockets.Events.Users;
+﻿using DiscordFlatCore.DTOs.WebSockets.Events.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordFlat.WebSockets.EventHandlers.Args
+namespace DiscordFlatCore.WebSockets.EventHandlers.Args
 {
     public class DiscordOnPresenceUpdateEventArgs : EventArgs
     {
