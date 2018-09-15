@@ -7,8 +7,13 @@ namespace DiscordFlat.Tests
 {
     public class AppConfig
     {
-        public static IConfiguration Config { get; } = Init();
+        private static IConfiguration instance { get; } = Init();
         
+        public static string GetApiKey()
+        {
+            return instance?["apiKey"];
+        }
+
         private static IConfiguration Init()
         {
             return new ConfigurationBuilder().AddJsonFile("appsettings.test.json")

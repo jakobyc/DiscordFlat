@@ -1,8 +1,6 @@
 using DiscordFlat.DTOs.Authorization;
 using DiscordFlat.WebSockets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace DiscordFlat.Tests
 {
@@ -15,18 +13,19 @@ namespace DiscordFlat.Tests
         {
             TokenResponse token = new TokenResponse(true)
             {
-                AccessToken = AppConfig.Config["apiKey"]
+                AccessToken = AppConfig.GetApiKey()
             };
             
             if (token != null && !string.IsNullOrEmpty(token.AccessToken))
             {
-                client.Connect(token.AccessToken).GetAwaiter();
+                bool connected = client.Connect(token.AccessToken).Result;
             }
             else
             {
                 throw new System.Exception("Invalid token.");
             }
         }
+
         [TestMethod]
         public void IsConnected()
         {
