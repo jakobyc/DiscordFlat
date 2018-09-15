@@ -23,4 +23,8 @@
     <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DiscordFlat\DiscordFlat.csproj" />
+  </ItemGroup>
+
 </Project>
