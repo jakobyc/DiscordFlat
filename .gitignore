@@ -2,4 +2,4 @@ bin/
 obj/
 .vs/
 packages/
-appsettings.test.json
+test/DiscordFlat.Tests/appsettings.test.json
